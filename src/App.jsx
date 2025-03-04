@@ -8,6 +8,8 @@ function App() {
   const [guessedWord, setGuessedWord] = useState([])
   // Create a state for all guesses (an array of arrays)
   const [allGuesses, setAllGuesses] = useState([])
+  // Create a state variable for the index of a guessed word
+  const [currentRowIndex, setCurrentRowIndex] = useState(0)
 
   // Convert the word from a string to an array so we can map the letters
   const currentWordArray = currentWord.split("")
@@ -35,16 +37,15 @@ function App() {
 }
 
 const addtoGuessandReset = () => {
-  setAllGuesses(prevGuesses => [...prevGuesses, guessedWord])
+  setAllGuesses(prevGuesses => {
+    let newGuesses = [...prevGuesses];
+    const copyOfGuessedWord = [...guessedWord];
+     newGuesses[currentRowIndex] = copyOfGuessedWord;
+     return newGuesses
+    })
+  setCurrentRowIndex(prevRowIndex => prevRowIndex + 1)
   setGuessedWord([]);
 }
-
-// const arrayofGuesses = () => {
-//   let missingRows = []
-//   for (let i = 0; i < (currentWord.length + 1 - allGuesses.length); i++) 
-//       missingRows.push(wordRow)
-//  setAllGuesses([...allGuesses, ...missingRows])
-//   }
 
 useEffect(() => {
   // Add logic to create missing rows
@@ -95,9 +96,7 @@ console.log(emptyRowIndex)
 <section className="text-center mt-16">
                 {keyboardElements}
 </section>
-{/* Submit Button */}
-{/* <section className="text-center mt-16"><button type="submit">Submit</button></section> */}
-    </>
+</>
   )
 }
 
