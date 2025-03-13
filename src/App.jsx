@@ -23,8 +23,8 @@ function App() {
   const [currentRowIndex, setCurrentRowIndex] = useState(0)
   // Create a state variable for the UI to shake when a word is invalid
   const [shakeRowIndex, setShakeRowIndex] = useState(null);
-
-    console.log("All guesses:", allGuesses)
+  // Create a state variable for the toast
+  const [toastMessage, setToastMessage] = useState(false)
 
 
   // Convert the word from a string to an array so we can map the letters
@@ -52,13 +52,19 @@ const guessWord = (letter) => {
     } else if (isValidWord) {
       addtoGuessandReset();
     } else {
+      showToast();
       triggerShakeEffect();
       console.log("Null");
     }
   } else {
-    setGuessedWord(prev => [...prev, letter]);
+    if (guessedWord.length === currentWord.length) {
+      null 
+     } else {
+      setGuessedWord(prev => [...prev, letter]);
+     }
+      }
   }
-}
+
 
 
 const addtoGuessandReset = () => {
@@ -109,9 +115,18 @@ const triggerShakeEffect = () => {
   console.log("Shake triggered!")
 };
 
+const showToast = () => {
+  setToastMessage(true);
+  setTimeout(() => {
+    setToastMessage(false);
+  }, 600);
+}
+
 
   return (
     <>
+    {toastMessage && <div className="fixed top-5 left-1/2 -translate-x-1/2 bg-indigo-500 text-white px-4 py-2 rounded-md shadow-lg transition-opacity duration-500">Word not in list!</div>}
+    {/* Toast for words not in the list */}
 {/* Title For Application Goes Here */}
 <header><h1 className="text-3xl font-bold text-center text-red-500 mt-16 mb-8">
   Hashle: New Twists, New Varieties
