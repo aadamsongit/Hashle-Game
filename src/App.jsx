@@ -25,6 +25,8 @@ function App() {
   const [shakeRowIndex, setShakeRowIndex] = useState(null);
   // Create a state variable for the toast
   const [toastMessage, setToastMessage] = useState(false)
+  // Create a state variable to compare guessed letters to those of the held word
+  const [letterStatuses, setLetterStatuses] = useState([])
 
 
   // Convert the word from a string to an array so we can map the letters
@@ -74,8 +76,46 @@ const addtoGuessandReset = () => {
      newGuesses[currentRowIndex] = copyOfGuessedWord;
      return newGuesses
     })
+  newStatuses = []
+  letterCount = {}
+  for (const [i, letter] of currentWord.entries()) {
+    if (letterCount[letter]) {
+      letterCount[letter]++;
+    } else {
+      letterCount[letter] = 1;
+    } if (guessedWord[i] == currentWord[i]) {
+      newStatuses[i] = "correct" 
+      letterCount[letter]--;
+    }
+  }
+    for (const [i, letter] of guessedWord.entries()) {
+     if (letterCount[letter] > 0) {
+      newStatuses[i] = "present"
+      letterCount[letter]--;
+    } else {
+      newStatuses[i] = "absent";  
+    }
+  }
+  setLetterStatuses(newStatuses)
+  
   setCurrentRowIndex(prevRowIndex => prevRowIndex + 1)
   setGuessedWord([]);
+};
+
+classNames = []
+
+const addClasses = () => {
+  for (let i = 0; i < guessedWord.length; i++) {
+    if (newStatus[i] == "correct") {
+      classNames[i] = "bg-green"
+    }
+    else if (newStatus[i] == "present") {
+      classNames[i] = "bg-yellow"
+    } else if (newStatus[i] == "absent") {
+      classNames[i] = "bg-gray"
+    }
+
+  }
 }
 
 useEffect(() => {
@@ -125,7 +165,7 @@ const showToast = () => {
 
   return (
     <>
-    {toastMessage && <div className="fixed top-5 left-1/2 -translate-x-1/2 bg-indigo-500 text-white px-4 py-2 rounded-md shadow-lg transition-opacity duration-500">Word not in list!</div>}
+    {toastMessage && <div className="fixed top-5 left-1/2 -translate-x-1/2 bg-indigo-500 text-white px-4 py-2 rounded-md shadow-lg transition-opacity duration-500">Not in word list!</div>}
     {/* Toast for words not in the list */}
 {/* Title For Application Goes Here */}
 <header><h1 className="text-3xl font-bold text-center text-red-500 mt-16 mb-8">
