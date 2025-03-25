@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect} from 'react'
 import './index.css'
 import data from './data.json'
 
@@ -6,15 +6,14 @@ function App() {
 
   const extractedWords = data.map(element => element.word);
   console.log(extractedWords)
+
   const randomArrayWord = () => {
     const randomIndex = Math.floor(Math.random() * extractedWords.length);
     return extractedWords[randomIndex];
   }
-  
-  console.log(randomArrayWord())
 
-  // Create a state for the word to be passed in
-  const [currentWord, setCurrentWord] = useState(randomArrayWord())
+  // Create a state for the word the user guesses
+  const [currentWord, setCurrentWord] = useState(randomArrayWord(""))
   // Create another state for the word the user guesses
   const [guessedWord, setGuessedWord] = useState([])
   // Create a state for all guesses (an array of arrays)
@@ -27,7 +26,23 @@ function App() {
   const [toastMessage, setToastMessage] = useState(false)
   // Create a state variable to compare guessed letters to those of the held word
   const [letterStatuses, setLetterStatuses] = useState([])
+  // Create a state array for the class names
+  const [classNames, setClassNames] = useState([])
 
+  //useEffect hook to prevent infinite re-renderings of the currentWord value
+  useEffect(() => {
+    const newWord = randomArrayWord().toUpperCase(); // normalize here
+    console.log("New random word set inside useEffect:", newWord);
+    setCurrentWord(newWord);
+  }, []);
+  
+  // Track when currentWord is updated
+// useEffect(() => {
+//   console.log("currentWord updated to:", currentWord);
+// }, [currentWord]);
+// // Check if currentWord is correct after it's set  
+  
+ 
 
   // Convert the word from a string to an array so we can map the letters
   const currentWordArray = currentWord.split("")
@@ -67,8 +82,6 @@ const guessWord = (letter) => {
       }
   }
 
-
-
 const addtoGuessandReset = () => {
   setAllGuesses(prevGuesses => {
     let newGuesses = [...prevGuesses];
@@ -76,47 +89,73 @@ const addtoGuessandReset = () => {
      newGuesses[currentRowIndex] = copyOfGuessedWord;
      return newGuesses
     })
-  newStatuses = []
-  letterCount = {}
-  for (const [i, letter] of currentWord.entries()) {
+  let newStatuses = [...letterStatuses]; // Copy the existing state
+  let letterCount = {}
+  for (const [i, letter] of currentWordArray.entries()) {
+    console.log(`Checking guessedWord[${i}]: ${guessedWord[i]} == currentWordArray[${i}]: ${currentWordArray[i]}`);
     if (letterCount[letter]) {
       letterCount[letter]++;
     } else {
       letterCount[letter] = 1;
-    } if (guessedWord[i] == currentWord[i]) {
-      newStatuses[i] = "correct" 
+      console.log("Guessed letter for correct:", guessedWord[i])
+      console.log("Array index to compare for text:", currentWordArray[i])
+    } if (guessedWord[i] == currentWordArray[i]) {
+      newStatuses[i] = "correct"
+      console.log("Check if correct exists:", newStatuses[i])
       letterCount[letter]--;
+      console.log("Letter count after processing currentWord:", letterCount);
     }
   }
     for (const [i, letter] of guessedWord.entries()) {
-     if (letterCount[letter] > 0) {
+      if (letterCount[letter] > 0 && newStatuses[i] !== "correct")        {
       newStatuses[i] = "present"
       letterCount[letter]--;
-    } else {
+    } else if (newStatuses[i] !== "correct") {
       newStatuses[i] = "absent";  
     }
   }
-  setLetterStatuses(newStatuses)
+  console.log("New statuses before state update:", newStatuses);
   
-  setCurrentRowIndex(prevRowIndex => prevRowIndex + 1)
+  setLetterStatuses(newStatuses)
+  addClasses(newStatuses)
+  
+  console.log("Row index before update:", currentRowIndex);
+  setCurrentRowIndex(prevRowIndex => {
+    console.log("Row index after update:", prevRowIndex + 1);
+    return prevRowIndex + 1;
+  });
+
+  console.log("Before clearing guessedWord:", guessedWord);
   setGuessedWord([]);
+  console.log("After clearing guessedWord:", guessedWord); // This won't reflect immediately
 };
 
-classNames = []
-
 const addClasses = () => {
-  for (let i = 0; i < guessedWord.length; i++) {
-    if (newStatus[i] == "correct") {
-      classNames[i] = "bg-green"
-    }
-    else if (newStatus[i] == "present") {
-      classNames[i] = "bg-yellow"
-    } else if (newStatus[i] == "absent") {
-      classNames[i] = "bg-gray"
-    }
+  setClassNames(prevClassNames => {
+    let newClassNames = [...prevClassNames];
+    let updatedStatuses = [...letterStatuses];
+    newClassNames[currentRowIndex] = updatedStatuses
+    console.log("Updated row classes:", newClassNames[currentRowIndex]);
+    console.log("Letter Statuses before update:", updatedStatuses)
 
-  }
+    for (let i = 0; i < guessedWord.length; i++) {
+      if (updatedStatuses[i] == "correct") {
+        newClassNames[currentRowIndex][i]  = "bg-green"
+      }
+      else if (updatedStatuses[i] == "present") {
+        newClassNames[currentRowIndex][i]  = "bg-yellow"
+      } else if (updatedStatuses[i] == "absent") {
+        newClassNames[currentRowIndex][i]  = "bg-gray"
+      }
+    }
+    console.log("ClassNames after update:", newClassNames);
+    return newClassNames
+    
+  })
+
+
 }
+
 
 useEffect(() => {
   // Add logic to create missing rows
@@ -136,13 +175,6 @@ useEffect(() => {
     ))
 
   console.log(guessedWord)
-
-
-// const isLetterGuessed = (letter) => {
-//   if (guessedWord.includes((letter)) {
-
-//   }
-// }
 
 const emptyRowIndex = allGuesses.findIndex(row => row.every(element => element === "" || element === "_"));
 console.log(emptyRowIndex)
@@ -181,7 +213,10 @@ const showToast = () => {
   key={index}
 >
 {wordRow.map((letter, key) => (
-  <span key={key} className="w-10 h-10 size-16 border-2 border-indigo-500/50 inline-block align-middle">{guessedWord[key] && index === emptyRowIndex ? guessedWord[key] : letter}</span>
+  <span key={key} className={`w-10 h-10 size-16 border-2 border-indigo-500/50 inline-block align-middle
+    ${classNames[key] === "bg-green" ? "bg-green":
+    classNames[key] === "bg-yellow" ? "bg-yellow" :
+    classNames[key] === "bg-gray" ? "bg-gray" : ''}`}>{guessedWord[key] && index === emptyRowIndex ? guessedWord[key] : letter}</span>
 ))}
  </section>
 ))}

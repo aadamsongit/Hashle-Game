@@ -82,3 +82,18 @@ button:focus-visible {
 .shake {
   animation: shake 1s ease-out;
 }
+
+.bg-green {
+  color: #ffffff;
+  background-color: green;
+}
+
+.bg-yellow {
+  color: #ffffff;
+  background-color: #B59F3B;
+}
+
+.bg-gray {
+  color: #ffffff;
+  background-color: gray;
+}
