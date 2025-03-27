@@ -130,10 +130,10 @@ const addtoGuessandReset = () => {
   console.log("After clearing guessedWord:", guessedWord); // This won't reflect immediately
 };
 
-const addClasses = () => {
+const addClasses = (newStatuses) => {
   setClassNames(prevClassNames => {
     let newClassNames = [...prevClassNames];
-    let updatedStatuses = [...letterStatuses];
+    let updatedStatuses = [...newStatuses];
     newClassNames[currentRowIndex] = updatedStatuses
     console.log("Updated row classes:", newClassNames[currentRowIndex]);
     console.log("Letter Statuses before update:", updatedStatuses)
@@ -212,12 +212,19 @@ const showToast = () => {
   className={`text-center mt-2 ${index === shakeRowIndex ? 'shake' : ''}`} 
   key={index}
 >
-{wordRow.map((letter, key) => (
-  <span key={key} className={`w-10 h-10 size-16 border-2 border-indigo-500/50 inline-block align-middle
-    ${classNames[key] === "bg-green" ? "bg-green":
-    classNames[key] === "bg-yellow" ? "bg-yellow" :
-    classNames[key] === "bg-gray" ? "bg-gray" : ''}`}>{guessedWord[key] && index === emptyRowIndex ? guessedWord[key] : letter}</span>
-))}
+{wordRow.map((letter, key) => {
+  console.log(`Row ${index} classes:`, classNames[index]); 
+  console.log(`Letter ${key} class:`, classNames[index]?.[key]); 
+
+  return (
+    <span key={key} className={`w-10 h-10 size-16 border-2 border-indigo-500/50 inline-block align-middle
+      ${classNames[index]?.[key] === "bg-green" ? "bg-green" :
+      classNames[index]?.[key] === "bg-yellow" ? "bg-yellow" :
+      classNames[index]?.[key] === "bg-gray" ? "bg-gray" : ''}`}>
+      {guessedWord[key] && index === emptyRowIndex ? guessedWord[key] : letter}
+    </span>
+  );
+})}
  </section>
 ))}
 {/* Keyboard Section */}
