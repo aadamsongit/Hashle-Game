@@ -28,6 +28,8 @@ function App() {
   const [letterStatuses, setLetterStatuses] = useState([])
   // Create a state array for the class names
   const [classNames, setClassNames] = useState([])
+  // Create a state for a win message
+  const [gameWon, setGameWon] = useState(false)
 
   //useEffect hook to prevent infinite re-renderings of the currentWord value
   useEffect(() => {
@@ -59,13 +61,18 @@ function App() {
 // Create a function to hold the guessed letters in state
 const guessWord = (letter) => {
       // Convert to lowercase for comparison
-  if (letter === "Delete") {
+  if (letter === "Delete" && !gameWon) {
     setGuessedWord(prev => prev.slice(0, -1));
   } else if (letter === "Enter") {
     const guessedWordStr = guessedWord.join('');
     const isValidWord = extractedWords.map(word => word.toLowerCase()).includes(guessedWordStr.toLowerCase());
+    console.log(`Checking win condition...`);
+    console.log(`guessedWord: "${guessedWord}" | currentWord: "${currentWord}"`);
     if (guessedWordStr.length !== currentWord.length) {
       triggerShakeEffect();
+    } else if (guessedWordStr === currentWord) {
+      console.log(`Winning condition met! guessedWord: ${guessedWordStr}, currentWord: ${currentWord}`);
+      triggerWin()
     } else if (isValidWord) {
       addtoGuessandReset();
     } else {
@@ -89,6 +96,21 @@ const addtoGuessandReset = () => {
      newGuesses[currentRowIndex] = copyOfGuessedWord;
      return newGuesses
     })
+
+  addStatusesandClasses()
+  
+  console.log("Row index before update:", currentRowIndex);
+  setCurrentRowIndex(prevRowIndex => {
+    console.log("Row index after update:", prevRowIndex + 1);
+    return prevRowIndex + 1;
+  });
+
+  console.log("Before clearing guessedWord:", guessedWord);
+  setGuessedWord([]);
+  console.log("After clearing guessedWord:", guessedWord); // This won't reflect immediately
+};
+
+const addStatusesandClasses = () => {
   let newStatuses = [...letterStatuses]; // Copy the existing state
   let letterCount = {}
   for (const [i, letter] of currentWordArray.entries()) {
@@ -117,20 +139,6 @@ const addtoGuessandReset = () => {
   console.log("New statuses before state update:", newStatuses);
   
   setLetterStatuses(newStatuses)
-  addClasses(newStatuses)
-  
-  console.log("Row index before update:", currentRowIndex);
-  setCurrentRowIndex(prevRowIndex => {
-    console.log("Row index after update:", prevRowIndex + 1);
-    return prevRowIndex + 1;
-  });
-
-  console.log("Before clearing guessedWord:", guessedWord);
-  setGuessedWord([]);
-  console.log("After clearing guessedWord:", guessedWord); // This won't reflect immediately
-};
-
-const addClasses = (newStatuses) => {
   setClassNames(prevClassNames => {
     let newClassNames = [...prevClassNames];
     let updatedStatuses = [...newStatuses];
@@ -155,6 +163,17 @@ const addClasses = (newStatuses) => {
 
 
 }
+
+const triggerWin = () => {
+  addStatusesandClasses()
+  console.log("triggerWin function is running");
+  setGameWon(true)
+}
+
+useEffect(() => {
+  console.log("Updated gameWon state:", gameWon);
+}, [gameWon]);
+
 
 
 useEffect(() => {
@@ -204,7 +223,7 @@ const showToast = () => {
   Hashle: New Twists, New Varieties
 </h1></header>
 {/* Guess Counter (Attempts Left) - Build Out This Section*/}
-<section><h3 className="text-center mb-16">Guesses Counter: Attempts Left Text Placeholder</h3></section>
+<section><h3 className="text-center mb-16">{gameWon ? "CONGRATULATIONS! YOU WIN!" : null}</h3></section>
 {/* Message Section */}
 {/* Word Input Field -- Build Out Here */}
 {allGuesses.map((wordRow, index) => (
@@ -213,9 +232,6 @@ const showToast = () => {
   key={index}
 >
 {wordRow.map((letter, key) => {
-  console.log(`Row ${index} classes:`, classNames[index]); 
-  console.log(`Letter ${key} class:`, classNames[index]?.[key]); 
-
   return (
     <span key={key} className={`w-10 h-10 size-16 border-2 border-indigo-500/50 inline-block align-middle
       ${classNames[index]?.[key] === "bg-green" ? "bg-green" :
