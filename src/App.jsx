@@ -30,6 +30,8 @@ function App() {
   const [classNames, setClassNames] = useState([])
   // Create a state for a win message
   const [gameWon, setGameWon] = useState(false)
+  // Create another state for a loss message
+  const [gameLoss, setGameLoss] = useState(false)
 
   //useEffect hook to prevent infinite re-renderings of the currentWord value
   useEffect(() => {
@@ -170,9 +172,21 @@ const triggerWin = () => {
   setGameWon(true)
 }
 
+const triggerLoss = () => {
+  addStatusesandClasses()
+  console.log("triggerLoss function is running");
+  setGameLoss(true)
+}
+
 useEffect(() => {
   console.log("Updated gameWon state:", gameWon);
 }, [gameWon]);
+
+useEffect(() => {
+  if (currentRowIndex === 6) {
+    triggerLoss()
+  }
+}, [currentRowIndex]);
 
 
 
@@ -223,7 +237,7 @@ const showToast = () => {
   Hashle: New Twists, New Varieties
 </h1></header>
 {/* Guess Counter (Attempts Left) - Build Out This Section*/}
-<section><h3 className="text-center mb-16">{gameWon ? "CONGRATULATIONS! YOU WIN!" : null}</h3></section>
+<section><h3 className="text-center mb-16">{gameWon ? "CONGRATULATIONS! YOU WIN!" : gameLoss ? "SORRY! BETTER LUCK NEXT TIME!" : null}</h3></section>
 {/* Message Section */}
 {/* Word Input Field -- Build Out Here */}
 {allGuesses.map((wordRow, index) => (
