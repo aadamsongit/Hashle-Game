@@ -5,7 +5,7 @@ import data from './data.json'
 function App() {
 
   const extractedWords = data.map(element => element.word);
-  console.log(extractedWords)
+  // console.log(extractedWords)
 
   const randomArrayWord = () => {
     const randomIndex = Math.floor(Math.random() * extractedWords.length);
@@ -32,6 +32,8 @@ function App() {
   const [gameWon, setGameWon] = useState(false)
   // Create another state for a loss message
   const [gameLoss, setGameLoss] = useState(false)
+  // Create a state object for styling the keyboard
+  const [keyStatuses, setKeyStatuses] = useState({})
 
   //useEffect hook to prevent infinite re-renderings of the currentWord value
   useEffect(() => {
@@ -163,6 +165,19 @@ const addStatusesandClasses = () => {
     
   })
 
+  // loop for logic for keyboard UI styling
+  const newKeyStatuses = { ...keyStatuses };
+  for (const [i, letter] of guessedWord.entries())
+  if (guessedWord[i] === currentWordArray[i]) {
+    newKeyStatuses[letter] = "correct"
+  } else if (currentWordArray.includes(guessedWord[i]) && newKeyStatuses[letter] !== "correct") {
+    newKeyStatuses[letter] = "present"
+  } else {
+    newKeyStatuses[letter] = "absent"
+  }
+  console.log(letterCount)
+    console.log("Key statuses:", newKeyStatuses)
+    setKeyStatuses(newKeyStatuses)
 
 }
 
@@ -202,10 +217,21 @@ useEffect(() => {
 
     // keyboard elements: nested map to iterate over elements in nested arrays
     const keyboardElements = keyboardRows.map((row, rowIndex) => (
-      <div key={rowIndex}>{row.map((letter, letterIndex) => (
-        <button key={letterIndex} onClick={() => guessWord(letter)}>{letter}</button>))}
+      <div key={rowIndex}>{row.map((letter, letterIndex) => {
+        // class for letter styling
+        const buttonClass = keyStatuses[letter] == "correct" ? "bg-green" : 
+        keyStatuses[letter] == "present" ? "bg-yellow" : 
+        keyStatuses[letter] == "absent" ? "bg-gray" : ""
+
+        // console.log("Index of letters:", letterIndex)
+        // console.log("Letter:", letter)
+
+        return (
+        <button key={letterIndex} className={buttonClass} onClick={() => {guessWord(letter)}}>{letter}</button>
+      );
+})}
         </div>
-    ))
+    ));
 
   console.log(guessedWord)
 
@@ -233,9 +259,14 @@ const showToast = () => {
     {toastMessage && <div className="fixed top-5 left-1/2 -translate-x-1/2 bg-indigo-500 text-white px-4 py-2 rounded-md shadow-lg transition-opacity duration-500">Not in word list!</div>}
     {/* Toast for words not in the list */}
 {/* Title For Application Goes Here */}
-<header><h1 className="text-3xl font-bold text-center text-red-500 mt-16 mb-8">
-  Hashle: New Twists, New Varieties
-</h1></header>
+<header className="flex justify-center mt-16 mb-8">
+  <div className="w-full max-w-[90%] sm:max-w-[660px]">
+    <h1 className="text-3xl font-bold terminal-title">
+    🚀Hashle: An Evolving Word Game
+    </h1>
+  </div>
+
+</header>
 {/* Guess Counter (Attempts Left) - Build Out This Section*/}
 <section><h3 className="text-center mb-16">{gameWon ? "CONGRATULATIONS! YOU WIN!" : gameLoss ? "SORRY! BETTER LUCK NEXT TIME!" : null}</h3></section>
 {/* Message Section */}

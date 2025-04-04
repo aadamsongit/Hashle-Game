@@ -97,3 +97,39 @@ button:focus-visible {
   color: #ffffff;
   background-color: gray;
 }
+
+.terminal-title {
+  font-family: monospace;
+  white-space: nowrap;
+  border-right: 0.11em solid orange;
+  letter-spacing: 0.15em;
+  display: inline-block; /* Keeps the text on one line */
+  overflow: hidden; /* Hides the text before animation starts */
+  
+  /* Adjust the width dynamically to reveal text */
+  max-width: 100%; /* Allow the text to expand fully */
+  
+  animation: 
+    typing 3.5s steps(30, end) forwards, /* Typing animation */
+    blink-caret 0.5s step-end infinite;  /* Blinking cursor effect */
+}
+
+@keyframes typing {
+  from { 
+    width: 0; /* Start with no visible text */
+  }
+  to { 
+    width: 100%; /* Expand to full text width */
+  }
+}
+
+@keyframes blink-caret {
+  from, to { 
+    border-color: transparent; 
+  }
+  50% { 
+    border-color: orange; /* Makes the caret blink */
+  }
+}
+
+
