@@ -34,6 +34,8 @@ function App() {
   const [gameLoss, setGameLoss] = useState(false)
   // Create a state object for styling the keyboard
   const [keyStatuses, setKeyStatuses] = useState({})
+  // Create a state for disabled letters for the keyboard styling
+  const [disabledLetters, setDisabledLetters] = useState([])
 
   //useEffect hook to prevent infinite re-renderings of the currentWord value
   useEffect(() => {
@@ -41,13 +43,7 @@ function App() {
     console.log("New random word set inside useEffect:", newWord);
     setCurrentWord(newWord);
   }, []);
-  
-  // Track when currentWord is updated
-// useEffect(() => {
-//   console.log("currentWord updated to:", currentWord);
-// }, [currentWord]);
-// // Check if currentWord is correct after it's set  
-  
+
  
 
   // Convert the word from a string to an array so we can map the letters
@@ -172,8 +168,10 @@ const addStatusesandClasses = () => {
     newKeyStatuses[letter] = "correct"
   } else if (currentWordArray.includes(guessedWord[i]) && newKeyStatuses[letter] !== "correct") {
     newKeyStatuses[letter] = "present"
-  } else {
+    //need to add logic for if word is marked as "correct" so "absent" doesn't overwrite
+  } else if (newKeyStatuses[letter] !== "correct" && newKeyStatuses[letter] !== "present") {
     newKeyStatuses[letter] = "absent"
+    updateDisabledLetters(letter)
   }
   console.log(letterCount)
     console.log("Key statuses:", newKeyStatuses)
@@ -181,17 +179,25 @@ const addStatusesandClasses = () => {
 
 }
 
+//set up a win function
 const triggerWin = () => {
   addStatusesandClasses()
   console.log("triggerWin function is running");
   setGameWon(true)
 }
 
+//set up a loss function
 const triggerLoss = () => {
   addStatusesandClasses()
   console.log("triggerLoss function is running");
   setGameLoss(true)
 }
+
+// create a helper function for an array of disabled letters
+const updateDisabledLetters = (letter) => {
+  setDisabledLetters((prev) => [...prev, letter]);
+}
+
 
 useEffect(() => {
   console.log("Updated gameWon state:", gameWon);
@@ -226,8 +232,20 @@ useEffect(() => {
         // console.log("Index of letters:", letterIndex)
         // console.log("Letter:", letter)
 
+        const gradientClass = letterIndex === 0 ? "group-0-class" :
+        letterIndex === 1 ? "group-1-class" :
+        letterIndex === 2 ? "group-2-class" :
+        letterIndex === 3 ? "group-3-class" :
+        letterIndex === 4 ? "group-4-class" :
+        letterIndex === 5 ? "group-5-class" :
+        letterIndex === 6 ? "group-6-class" : null
+
+        const combinedClass = `${gradientClass} ${buttonClass}`.trim();
+      
+
         return (
-        <button key={letterIndex} className={buttonClass} onClick={() => {guessWord(letter)}}>{letter}</button>
+        <button key={letterIndex} className={combinedClass} onClick={() => {guessWord(letter)}} disabled={disabledLetters.includes(letter)}
+>{letter}</button>
       );
 })}
         </div>
