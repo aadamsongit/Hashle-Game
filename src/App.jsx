@@ -238,7 +238,11 @@ useEffect(() => {
         letterIndex === 3 ? "group-3-class" :
         letterIndex === 4 ? "group-4-class" :
         letterIndex === 5 ? "group-5-class" :
-        letterIndex === 6 ? "group-6-class" : null
+        letterIndex === 6 ? "group-6-class" : 
+        letterIndex === 7 ? "group-7-class" :
+        letterIndex === 8 ? "group-8-class" :
+        letterIndex === 9 ? "group-9-class" :
+        letterIndex === 10 ? "group-10-class" : null
 
         const combinedClass = `${gradientClass} ${buttonClass}`.trim();
       
@@ -286,7 +290,7 @@ const showToast = () => {
 
 </header>
 {/* Guess Counter (Attempts Left) - Build Out This Section*/}
-<section><h3 className="text-center mb-16">{gameWon ? "CONGRATULATIONS! YOU WIN!" : gameLoss ? "SORRY! BETTER LUCK NEXT TIME!" : null}</h3></section>
+<section><h3 className={`text-center mb-16 ${gameWon ? "game-won" : gameLoss ? "game-lost" : null}`}>{gameWon ? "CONGRATULATIONS! YOU WIN!" : gameLoss ? "SORRY! BETTER LUCK NEXT TIME!" : null}</h3></section>
 {/* Message Section */}
 {/* Word Input Field -- Build Out Here */}
 {allGuesses.map((wordRow, index) => (

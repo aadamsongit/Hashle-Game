@@ -140,16 +140,14 @@ button:focus-visible {
   right: -3px;
   bottom: -3px;
   left: -3px;
-  border-radius: 8px; /* match your button's shape */
+  border-radius: 8px;
   animation: rainbowPulse 3s linear infinite;
-
+  animation-delay: -2.0s;
 }
-
 
 .group-0-class {
   position: relative;
-  margin: 2px
-  /* other styling, maybe z-index: 0 to balance the -1 on ::before */
+  margin: 2px;
 }
 
 .group-1-class::before {
@@ -160,11 +158,9 @@ button:focus-visible {
   right: -3px;
   bottom: -3px;
   left: -3px;
-  border-radius: 8px; /* match your button's shape */
+  border-radius: 8px;
   animation: rainbowPulse 3s linear infinite;
-  animation-delay: -0.2s;
-
-
+  animation-delay: -1.8s;
 }
 
 .group-2-class::before {
@@ -175,11 +171,9 @@ button:focus-visible {
   right: -3px;
   bottom: -3px;
   left: -3px;
-  border-radius: 8px; /* match your button's shape */
+  border-radius: 8px;
   animation: rainbowPulse 3s linear infinite;
-  animation-delay: -0.4s;
-
-
+  animation-delay: -1.6s;
 }
 
 .group-3-class::before {
@@ -190,11 +184,9 @@ button:focus-visible {
   right: -3px;
   bottom: -3px;
   left: -3px;
-  border-radius: 8px; /* match your button's shape */
+  border-radius: 8px;
   animation: rainbowPulse 3s linear infinite;
-  animation-delay: -0.6s;
-
-
+  animation-delay: -1.4s;
 }
 
 .group-4-class::before {
@@ -205,13 +197,88 @@ button:focus-visible {
   right: -3px;
   bottom: -3px;
   left: -3px;
-  border-radius: 8px; /* match your button's shape */
+  border-radius: 8px;
   animation: rainbowPulse 3s linear infinite;
-  animation-delay: -0.8s;
-
-
+  animation-delay: -1.2s;
 }
 
+.group-5-class::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -3px;
+  right: -3px;
+  bottom: -3px;
+  left: -3px;
+  border-radius: 8px;
+  animation: rainbowPulse 3s linear infinite;
+  animation-delay: -1.0s;
+}
+
+.group-6-class::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -3px;
+  right: -3px;
+  bottom: -3px;
+  left: -3px;
+  border-radius: 8px;
+  animation: rainbowPulse 3s linear infinite;
+  animation-delay: -0.8s;
+}
+
+.group-7-class::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -3px;
+  right: -3px;
+  bottom: -3px;
+  left: -3px;
+  border-radius: 8px;
+  animation: rainbowPulse 3s linear infinite;
+  animation-delay: -0.6s;
+}
+
+.group-8-class::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -3px;
+  right: -3px;
+  bottom: -3px;
+  left: -3px;
+  border-radius: 8px;
+  animation: rainbowPulse 3s linear infinite;
+  animation-delay: -0.4s;
+}
+
+.group-9-class::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -3px;
+  right: -3px;
+  bottom: -3px;
+  left: -3px;
+  border-radius: 8px;
+  animation: rainbowPulse 3s linear infinite;
+  animation-delay: -0.2s;
+}
+
+.group-10-class::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -3px;
+  right: -3px;
+  bottom: -3px;
+  left: -3px;
+  border-radius: 8px;
+  animation: rainbowPulse 3s linear infinite;
+  animation-delay: 0s;
+}
 
 
 .group-1-class {
@@ -237,6 +304,41 @@ button:focus-visible {
   margin: 2px
   /* other styling, maybe z-index: 0 to balance the -1 on ::before */
 }
+.group-5-class {
+  position: relative;
+  margin: 2px
+  /* other styling, maybe z-index: 0 to balance the -1 on ::before */
+}
+
+.group-6-class {
+  position: relative;
+  margin: 2px
+  /* other styling, maybe z-index: 0 to balance the -1 on ::before */
+}
+
+.group-7-class {
+  position: relative;
+  margin: 2px
+  /* other styling, maybe z-index: 0 to balance the -1 on ::before */
+}
+
+.group-8-class {
+  position: relative;
+  margin: 2px
+  /* other styling, maybe z-index: 0 to balance the -1 on ::before */
+}
+
+.group-9-class {
+  position: relative;
+  margin: 2px
+  /* other styling, maybe z-index: 0 to balance the -1 on ::before */
+}
+
+.group-10-class {
+  position: relative;
+  margin: 2px
+  /* other styling, maybe z-index: 0 to balance the -1 on ::before */
+}
 
 @keyframes rainbowPulse {
   0%   { background-color: red; }
@@ -247,6 +349,67 @@ button:focus-visible {
   83%  { background-color: violet; }
   100% { background-color: red; }
 }
+
+.game-won,
+.game-lost {
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  margin: 1rem auto;
+  max-width: 400px;
+  letter-spacing: 1px;
+  color: #fff;
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  opacity: 0;
+  animation: fadeInOut 2.5s ease-in-out forwards;
+  visibility: hidden;
+}
+
+.game-won {
+  background-color: #22c55e; /* Vibrant green */
+  text-shadow:
+    0 0 1px #000,
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000; /* Black outline */
+}
+
+.game-lost {
+  background-color: #b23535; /* Red */
+  text-shadow:
+    0 0 1px #000,
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000; /* Black outline */
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  15% {
+    opacity: 1;
+    visibility: visible;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+
 
 
 
