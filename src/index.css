@@ -9,7 +9,9 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  --background-color: transparent; 
+  --text-color: black;
+  --button-bg: #F5F5F5;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -26,6 +28,12 @@ a:hover {
   color: #535bf2;
 }
 
+.dark-mode {
+  --background-color: #333;
+  --text-color: white;
+  --button-bg: black;
+}
+
 /* Remove default styles for Tailwind to style elements! */
 
 body {
@@ -34,6 +42,9 @@ body {
   /* place-items: center; */
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  z-index: -1
 }
 
 h1 {
@@ -42,15 +53,15 @@ h1 {
 }
 
 button {
+  position: relative;
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--button-bg) !important;
   cursor: pointer;
-  transition: border-color 0.25s;
 }
 button:hover {
   border-color: #646cff;
@@ -135,7 +146,6 @@ button:focus-visible {
 .group-0-class::before {
   content: "";
   position: absolute;
-  z-index: -1;
   top: -3px;
   right: -3px;
   bottom: -3px;
@@ -143,11 +153,13 @@ button:focus-visible {
   border-radius: 8px;
   animation: rainbowPulse 3s linear infinite;
   animation-delay: -2.0s;
+  z-index: -1;
 }
 
 .group-0-class {
   position: relative;
   margin: 2px;
+  background-color: #F5F5F5;
 }
 
 .group-1-class::before {
@@ -340,6 +352,56 @@ button:focus-visible {
   /* other styling, maybe z-index: 0 to balance the -1 on ::before */
 }
 
+.letter-0-class {
+  animation: textPulse 3s linear infinite;
+  animation-delay: -2.0s;
+}
+
+.letter-1-class {
+  animation: textPulse 3s linear infinite;
+  animation-delay: -1.8s;
+}
+
+.letter-2-class {
+  animation: textPulse 3s linear infinite;
+  animation-delay: -1.6s;
+}
+
+.letter-3-class {
+  animation: textPulse 3s linear infinite;
+  animation-delay: -1.4s;
+}
+
+.letter-4-class {
+  animation: textPulse 3s linear infinite;
+  animation-delay: -1.2s;
+}
+
+.letter-5-class {
+  animation: textPulse 3s linear infinite;
+  animation-delay: -1.0s;
+}
+
+.letter-6-class {
+  animation: textPulse 3s linear infinite;
+  animation-delay: -.8s;
+}
+
+.letter-7-class {
+  animation: textPulse 3s linear infinite;
+  animation-delay: -.6s;
+}
+
+.letter-8-class {
+  animation: textPulse 3s linear infinite;
+  animation-delay: -.4s;
+}
+
+.letter-9-class {
+  animation: textPulse 3s linear infinite;
+  animation-delay: -2.s;
+}
+
 @keyframes rainbowPulse {
   0%   { background-color: red; }
   16%  { background-color: orange; }
@@ -348,7 +410,18 @@ button:focus-visible {
   66%  { background-color: blue; }
   83%  { background-color: violet; }
   100% { background-color: red; }
+
 }
+
+@keyframes textPulse {
+    0%   { color: red; }
+    16%  { color: orange; }
+    33%  { color: yellow; }
+    50%  { color: green; }
+    66%  { color: blue; }
+    83%  { color: violet; }
+    100% { color: red; }
+  }
 
 .game-won,
 .game-lost {
@@ -408,6 +481,75 @@ button:focus-visible {
     visibility: hidden;
   }
 }
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.keyboard-row {
+  position: relative; /* create stacking context */
+  background-color: transparent; /* or match light mode */
+  z-index: 0;
+  /* Optional styling if you want to limit how far it spreads */
+  /* padding or margin if needed */
+}
+
 
 
 
