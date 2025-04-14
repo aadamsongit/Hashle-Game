@@ -53,6 +53,7 @@ h1 {
 }
 
 button {
+  all: unset;
   position: relative;
   border-radius: 8px;
   border: 1px solid transparent;
@@ -60,7 +61,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: var(--button-bg) !important;
+  background-color: var(--button-bg);
   cursor: pointer;
 }
 button:hover {
@@ -79,9 +80,9 @@ button:focus-visible {
   a:hover {
     color: #747bff;
   }
-  button {
+  /* button {
     background-color: #f9f9f9;
-  }
+  } */
 }
 
 @keyframes shake {
@@ -159,7 +160,6 @@ button:focus-visible {
 .group-0-class {
   position: relative;
   margin: 2px;
-  background-color: #F5F5F5;
 }
 
 .group-1-class::before {

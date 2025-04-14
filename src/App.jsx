@@ -76,52 +76,58 @@ function App() {
   const wordRow = currentWordArray.map((letter) => ('')); 
 
 // Function for a user to add letters to the board and guess a word
-const guessWord = (letter) => {
-      // Pass in "letter" from the keyboard map
+// Pass in "letter" from the keyboard map
+const guessWord = (letter) => {  
+  // Slice method to delete letters
   if (letter === "Delete" && !gameWon) {
     setGuessedWord(prev => prev.slice(0, -1));
-    // Slice method to delete letters
   } else if (letter === "Enter") {
+    //Convert the guessedWord to a string so it can be compared to the currentWord value
     const guessedWordStr = guessedWord.join('');
+    // Create a variable to check whether a user's guess is in the word list
     const isValidWord = extractedWords.map(word => word.toLowerCase()).includes(guessedWordStr.toLowerCase());
-    console.log(`Checking win condition...`);
-    console.log(`guessedWord: "${guessedWord}" | currentWord: "${currentWord}"`);
+    // If the guessed word is too short, trigger a shake effect
     if (guessedWordStr.length !== currentWord.length) {
       triggerShakeEffect();
-      // If the guessed word is too short, trigger a shake effect
+      // If the user's guessed word matches the current word (default word), trigger the win condition
     } else if (guessedWordStr === currentWord) {
-      console.log(`Winning condition met! guessedWord: ${guessedWordStr}, currentWord: ${currentWord}`);
       triggerWin()
+      // If the user guesses a word in the list but it's not the correct word, call the addtoGuessandReset function
     } else if (isValidWord) {
       addtoGuessandReset();
+      // If the word is not in the list, show a toast message and also trigger the shake effect
     } else {
       showToast();
       triggerShakeEffect();
-      console.log("Null");
     }
   } else {
+    // Do not let a user add letters beyond the length of the currentWord
     if (guessedWord.length === currentWord.length) {
       null 
+      // If a "letter" isn't Delete or Enter and the length is below currentWord length, set the guessedWord state by adding letters to the array
      } else {
       setGuessedWord(prev => [...prev, letter]);
      }
       }
   }
 
-  // Function to add the guess to the array of guesses, update the row index, and initialize a new array for a new guess
+  // Function to update the array of guesses (allGuesses)
 const addtoGuessandReset = () => {
+  // Create a shallow copy of guesses to store previous guesses and update the state to add to newGuesses when the function is called
   setAllGuesses(prevGuesses => {
     let newGuesses = [...prevGuesses];
+    // The guessedWord array is spread with a shallow copy
     const copyOfGuessedWord = [...guessedWord];
+    // The guessedWord, as a copy, is added as an array to the array of arrays
      newGuesses[currentRowIndex] = copyOfGuessedWord;
      return newGuesses
     })
 
+  // Call addStatusesandClasses to add styling for the guessed letters based on whether they are correct, present, or absent
   addStatusesandClasses()
   
-  console.log("Row index before update:", currentRowIndex);
+  // Use the state setter to update the row index so that a user will move to the next empty array
   setCurrentRowIndex(prevRowIndex => {
-    console.log("Row index after update:", prevRowIndex + 1);
     return prevRowIndex + 1;
   });
 
@@ -132,7 +138,7 @@ const addtoGuessandReset = () => {
 
 
 const addStatusesandClasses = () => {
-  let newStatuses = [...letterStatuses]; // Copy the existing state
+  let newStatuses = Array(guessedWord.length).fill("");
   let letterCount = {}
   for (const [i, letter] of currentWordArray.entries()) {
     console.log(`Checking guessedWord[${i}]: ${guessedWord[i]} == currentWordArray[${i}]: ${currentWordArray[i]}`);
