@@ -131,28 +131,29 @@ const addtoGuessandReset = () => {
     return prevRowIndex + 1;
   });
 
-  console.log("Before clearing guessedWord:", guessedWord);
+  // Set an empty array so a user can guess a new word
   setGuessedWord([]);
-  console.log("After clearing guessedWord:", guessedWord); // This won't reflect immediately
 };
 
-
+// Function to create logic for styling letters of guessed words (correct/present/absent)
 const addStatusesandClasses = () => {
+  //
   let newStatuses = Array(guessedWord.length).fill("");
+  // Initialize an empty object to keep track of guesses
   let letterCount = {}
+  // For/of loop to iterate the currentWord array
   for (const [i, letter] of currentWordArray.entries()) {
-    console.log(`Checking guessedWord[${i}]: ${guessedWord[i]} == currentWordArray[${i}]: ${currentWordArray[i]}`);
+    // Increment the letterCount object for each instance of the letter in currentWord
     if (letterCount[letter]) {
       letterCount[letter]++;
     } else {
+      // Initialize the letter if it's not already in the object
       letterCount[letter] = 1;
-      console.log("Guessed letter for correct:", guessedWord[i])
-      console.log("Array index to compare for text:", currentWordArray[i])
+      // If the index of a guessed letter equals the index of the letter in the currentWord array, add "correct" to newStatuses at the index
     } if (guessedWord[i] == currentWordArray[i]) {
       newStatuses[i] = "correct"
-      console.log("Check if correct exists:", newStatuses[i])
+      // Now decrement the letterCount object to account for present/absent numbers logic check
       letterCount[letter]--;
-      console.log("Letter count after processing currentWord:", letterCount);
     }
   }
     for (const [i, letter] of guessedWord.entries()) {
@@ -330,7 +331,7 @@ const showToast = () => {
 
     {toastMessage && <div className="fixed top-5 left-1/2 -translate-x-1/2 bg-indigo-500 text-white px-4 py-2 rounded-md shadow-lg transition-opacity duration-500">Not in word list!</div>}
     {/* Toast for words not in the list */}
-{/* Title For Application Goes Here */}
+{/* Title For Application*/}
 <header className="flex justify-center mt-16 mb-8">
   <div className="w-full max-w-[90%] sm:max-w-[660px]">
     <h1 className="text-3xl font-bold terminal-title">
@@ -339,10 +340,9 @@ const showToast = () => {
   </div>
 
 </header>
-{/* Guess Counter (Attempts Left) - Build Out This Section*/}
+{/* { This section shows toasts for wins or losses based on conditional win/loss logic */}
 <section><h3 className={`text-center mb-16 ${gameWon ? "game-won" : gameLoss ? "game-lost" : null}`}>{gameWon ? "CONGRATULATIONS! YOU WIN!" : gameLoss ? "SORRY! BETTER LUCK NEXT TIME!" : null}</h3></section>
-{/* Message Section */}
-{/* Word Input Field -- Build Out Here */}
+{/* Map the board with an array of arrays for guesses */}
 {allGuesses.map((wordRow, index) => (
   <section 
   className={`text-center mt-2 ${index === shakeRowIndex ? 'shake' : ''}`} 
