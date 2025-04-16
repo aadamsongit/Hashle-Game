@@ -37,6 +37,8 @@ function App() {
   const [disabledLetters, setDisabledLetters] = useState([])
 
   const [darkMode, setDarkMode] = useState(false);
+  const [revealingTiles, setRevealingTiles] = useState({});
+
 
   useEffect(() => {
     if (darkMode) {
@@ -124,7 +126,12 @@ const addtoGuessandReset = () => {
     })
 
   // Call addStatusesandClasses to add styling for the guessed letters based on whether they are correct, present, or absent
-  addStatusesandClasses()
+  handleGuessReveal(); // start the flip first
+
+  setTimeout(() => {
+    addStatusesandClasses(); // THEN apply colors mid-flip
+  }, 300); // Match the halfway point of your flip animation
+  
   
   // Use the state setter to update the row index so that a user will move to the next empty array
   setCurrentRowIndex(prevRowIndex => {
@@ -167,27 +174,31 @@ const addStatusesandClasses = () => {
   console.log("New statuses before state update:", newStatuses);
   
   setLetterStatuses(newStatuses)
-  setClassNames(prevClassNames => {
-    let newClassNames = [...prevClassNames];
-    let updatedStatuses = [...newStatuses];
-    newClassNames[currentRowIndex] = updatedStatuses
-    console.log("Updated row classes:", newClassNames[currentRowIndex]);
-    console.log("Letter Statuses before update:", updatedStatuses)
-
-    for (let i = 0; i < guessedWord.length; i++) {
-      if (updatedStatuses[i] == "correct") {
-        newClassNames[currentRowIndex][i]  = "bg-green"
-      }
-      else if (updatedStatuses[i] == "present") {
-        newClassNames[currentRowIndex][i]  = "bg-yellow"
-      } else if (updatedStatuses[i] == "absent") {
-        newClassNames[currentRowIndex][i]  = "bg-gray"
-      }
-    }
-    console.log("ClassNames after update:", newClassNames);
-    return newClassNames
-    
-  })
+  for (let i = 0; i < guessedWord.length; i++) {
+    setTimeout(() => {
+      setClassNames(prevClassNames => {
+        let newClassNames = [...prevClassNames];
+        let updatedStatuses = [...newStatuses]; // same status array you built
+  
+        const status = updatedStatuses[i];
+  
+        if (!newClassNames[currentRowIndex]) {
+          newClassNames[currentRowIndex] = Array(guessedWord.length).fill("");
+        }
+  
+        if (status === "correct") {
+          newClassNames[currentRowIndex][i] = "bg-green";
+        } else if (status === "present") {
+          newClassNames[currentRowIndex][i] = "bg-yellow";
+        } else if (status === "absent") {
+          newClassNames[currentRowIndex][i] = "bg-gray";
+        }
+  
+        return newClassNames;
+      });
+    }, i * 300); // Delay each letter's className update by 300ms
+  }
+  
 
   // loop for logic for keyboard UI styling
   const newKeyStatuses = { ...keyStatuses };
@@ -237,6 +248,23 @@ useEffect(() => {
   }
 }, [currentRowIndex]);
 
+const handleGuessReveal = () => {
+  const reveals = {};
+
+  for (let i = 0; i < guessedWord.length; i++) {
+    setTimeout(() => {
+      setRevealingTiles(prev => ({
+        ...prev,
+        [`${currentRowIndex}-${i}`]: true
+      }));
+    }, i * 300); // 300ms between flips
+  }
+
+  // Optional: clear revealing after the full animation is done
+  setTimeout(() => {
+    setRevealingTiles({});
+  }, guessedWord.length * 300 + 600); // small buffer after final tile
+};
 
 
 useEffect(() => {
@@ -350,12 +378,17 @@ const showToast = () => {
 >
 {wordRow.map((letter, key) => {
   return (
-    <span key={key} className={`w-10 h-10 size-16 border-2 border-indigo-500/50 inline-block align-middle
-      ${classNames[index]?.[key] === "bg-green" ? "bg-green" :
-      classNames[index]?.[key] === "bg-yellow" ? "bg-yellow" :
-      classNames[index]?.[key] === "bg-gray" ? "bg-gray" : ''}`}>
-      {guessedWord[key] && index === emptyRowIndex ? guessedWord[key] : letter}
-    </span>
+<span
+  key={key}
+  className={`tile w-10 h-10 size-16 border-2 border-indigo-500/50 inline-block align-middle
+    ${classNames[index]?.[key] === "bg-green" ? "bg-green" :
+    classNames[index]?.[key] === "bg-yellow" ? "bg-yellow" :
+    classNames[index]?.[key] === "bg-gray" ? "bg-gray" : ''} 
+    ${revealingTiles[`${index}-${key}`] ? "revealing" : ""}`}
+>
+  {guessedWord[key] && index === emptyRowIndex ? guessedWord[key] : letter}
+</span>
+
   );
 })}
  </section>
