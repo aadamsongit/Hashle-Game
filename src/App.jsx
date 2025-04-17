@@ -38,6 +38,8 @@ function App() {
 
   const [darkMode, setDarkMode] = useState(false);
   const [revealingTiles, setRevealingTiles] = useState({});
+  const [bounceRowIndex, setBounceRowIndex] = useState(null);
+
 
 
   useEffect(() => {
@@ -218,12 +220,15 @@ const addStatusesandClasses = () => {
 
 }
 
-//set up a win function
 const triggerWin = () => {
-  addStatusesandClasses()
-  console.log("triggerWin function is running");
-  setGameWon(true)
-}
+  handleGuessReveal(); // 💡 Trigger the flip first
+  setTimeout(() => {
+    addStatusesandClasses(); // 💡 Then add green backgrounds
+  }, 300); // Match the flip halfway point
+  setGameWon(true);
+  setBounceRowIndex(currentRowIndex);
+};
+
 
 //set up a loss function
 const triggerLoss = () => {
@@ -384,7 +389,8 @@ const showToast = () => {
     ${classNames[index]?.[key] === "bg-green" ? "bg-green" :
     classNames[index]?.[key] === "bg-yellow" ? "bg-yellow" :
     classNames[index]?.[key] === "bg-gray" ? "bg-gray" : ''} 
-    ${revealingTiles[`${index}-${key}`] ? "revealing" : ""}`}
+    ${revealingTiles[`${index}-${key}`] ? "revealing" : ""}
+    ${index === bounceRowIndex ? "bounce" : ""}`}
 >
   {guessedWord[key] && index === emptyRowIndex ? guessedWord[key] : letter}
 </span>

@@ -548,6 +548,12 @@ input:checked + .slider:before {
   z-index: 0;
   /* Optional styling if you want to limit how far it spreads */
   /* padding or margin if needed */
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap; /* Prevent wrapping */
+  gap: 0.25rem; /* spacing between keys */
+  max-width: 100vw;
+  overflow-x: auto;
 }
 
 .tile {
