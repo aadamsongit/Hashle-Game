@@ -39,6 +39,8 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [revealingTiles, setRevealingTiles] = useState({});
   const [bounceRowIndex, setBounceRowIndex] = useState(null);
+  const [bounceTiles, setBounceTiles] = useState({});
+
 
 
 
@@ -220,14 +222,28 @@ const addStatusesandClasses = () => {
 
 }
 
+// this part is a work in progress.
 const triggerWin = () => {
-  handleGuessReveal(); // 💡 Trigger the flip first
+  handleGuessReveal(); // Start the flip animation
+
+  // After the flip completes, apply the classes
   setTimeout(() => {
-    addStatusesandClasses(); // 💡 Then add green backgrounds
-  }, 300); // Match the flip halfway point
+    addStatusesandClasses(); // Apply green/yellow/gray
+  }, 300);
+
+  // For each letter, stagger bounce AFTER its own flip settles
+  currentWordArray.forEach((_, i) => {
+    setTimeout(() => {
+      setBounceTiles(prev => ({
+        ...prev,
+        [`${currentRowIndex}-${i}`]: true,
+      }));
+    }, 300 + i * 160); // 🕒 Start bounce only after its flip + slight delay
+  });
+
   setGameWon(true);
-  setBounceRowIndex(currentRowIndex);
 };
+
 
 
 //set up a loss function
@@ -390,7 +406,7 @@ const showToast = () => {
     classNames[index]?.[key] === "bg-yellow" ? "bg-yellow" :
     classNames[index]?.[key] === "bg-gray" ? "bg-gray" : ''} 
     ${revealingTiles[`${index}-${key}`] ? "revealing" : ""}
-    ${index === bounceRowIndex ? "bounce" : ""}`}
+    ${bounceTiles[`${index}-${key}`] ? "bounce" : ""}`}
 >
   {guessedWord[key] && index === emptyRowIndex ? guessedWord[key] : letter}
 </span>
