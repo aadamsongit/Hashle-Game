@@ -509,7 +509,7 @@ button:focus-visible {
 
 .slider:before {
   position: absolute;
-  content: "";
+  content: "☀️";
   height: 26px;
   width: 26px;
   left: 4px;
@@ -531,6 +531,7 @@ input:checked + .slider:before {
   -webkit-transform: translateX(26px);
   -ms-transform: translateX(26px);
   transform: translateX(26px);
+  content: "🌙";
 }
 
 /* Rounded sliders */

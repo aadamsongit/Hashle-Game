@@ -222,27 +222,33 @@ const addStatusesandClasses = () => {
 
 }
 
-// this part is a work in progress.
 const triggerWin = () => {
   handleGuessReveal(); // Start the flip animation
 
   // After the flip completes, apply the classes
   setTimeout(() => {
     addStatusesandClasses(); // Apply green/yellow/gray
-  }, 300);
 
-  // For each letter, stagger bounce AFTER its own flip settles
-  currentWordArray.forEach((_, i) => {
+    // 💡 Delay bounce slightly after styling is fully applied
     setTimeout(() => {
-      setBounceTiles(prev => ({
-        ...prev,
-        [`${currentRowIndex}-${i}`]: true,
-      }));
-    }, 300 + i * 160); // 🕒 Start bounce only after its flip + slight delay
-  });
+      bounceWinRow(); // <- now starts AFTER color is visible
+    }, 1200); // tweak this as needed
+  }, 300); // Adjust based on your flip duration
 
   setGameWon(true);
 };
+
+const bounceWinRow = () => {
+    // For each letter, stagger bounce AFTER its own flip settles
+    currentWordArray.forEach((_, i) => {
+      setTimeout(() => {
+        setBounceTiles(prev => ({
+          ...prev,
+          [`${currentRowIndex}-${i}`]: true,
+        }));
+      }, i * 100); // 🕒 Start bounce only after its flip + slight delay
+    });  
+}
 
 
 
@@ -309,9 +315,6 @@ const keyboardRows = [
         const buttonClass = keyStatuses[letter] == "correct" ? "bg-green" : 
         keyStatuses[letter] == "present" ? "bg-yellow" : 
         keyStatuses[letter] == "absent" ? "bg-gray" : ""
-
-        // console.log("Index of letters:", letterIndex)
-        // console.log("Letter:", letter)
 
         const gradientClass = letterIndex === 0 ? "group-0-class" :
         letterIndex === 1 ? "group-1-class" :
