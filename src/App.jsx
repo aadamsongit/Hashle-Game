@@ -340,8 +340,8 @@ const keyboardRows = [
         letterIndex === 9 ? "letter-9-class" :
         letterIndex === 10 ? "letter-10-class" : null
 
-        // going to need to fix this because dark mode is currently overriding the styling of the guessed letters
-        const combinedClass = `${gradientClass} ${buttonClass} ${darkMode ? 'dark-mode' : ''}`.trim();
+        
+        const combinedClass = `min-w-0 shrink text-sm sm:text-lg px-2 sm:px-4 py-1 sm:py-2 ${gradientClass} ${buttonClass} ${darkMode ? 'dark-mode' : ''}`.trim();
 
         return (
         <button key={letterIndex} className={combinedClass} onClick={() => {guessWord(letter)}} disabled={disabledLetters.includes(letter)}
