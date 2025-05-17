@@ -381,12 +381,13 @@ const showToast = () => {
   </label>
 </nav>
 
-    {toastMessage && <div className="fixed top-5 left-1/2 -translate-x-1/2 bg-indigo-500 text-white px-4 py-2 rounded-md shadow-lg transition-opacity duration-500">Not in word list!</div>}
     {/* Toast for words not in the list */}
+    {toastMessage && <div className="fixed top-5 left-1/2 -translate-x-1/2 bg-indigo-500 text-white px-4 py-2 rounded-md shadow-lg transition-opacity duration-500">Not in word list!</div>}
+
 {/* Title For Application*/}
 <header className="flex justify-center mt-16 mb-8">
   <div className="w-full max-w-[90%] sm:max-w-[660px]">
-    <h1 className="text-3xl font-bold terminal-title">
+    <h1 className="sm:text-3xl font-bold terminal-title text-sm pl-[30px] sm:pl-0">
     🚀Hashle: An Evolving Word Game
     </h1>
   </div>
@@ -397,14 +398,14 @@ const showToast = () => {
 {/* Map the board with an array of arrays for guesses */}
 {allGuesses.map((wordRow, index) => (
   <section 
-  className={`text-center mt-2 ${index === shakeRowIndex ? 'shake' : ''}`} 
+  className={`text-center sm:mt-2 ${index === shakeRowIndex ? 'shake' : ''}`} 
   key={index}
 >
 {wordRow.map((letter, key) => {
   return (
 <span
   key={key}
-  className={`tile w-10 h-10 size-16 border-2 border-indigo-500/50 inline-block align-middle
+  className={`tile sm:w-10 sm:h-10 w-6 h-6 border-2 border-indigo-500/50 inline-block align-middle
     ${classNames[index]?.[key] === "bg-green" ? "bg-green" :
     classNames[index]?.[key] === "bg-yellow" ? "bg-yellow" :
     classNames[index]?.[key] === "bg-gray" ? "bg-gray" : ''} 
