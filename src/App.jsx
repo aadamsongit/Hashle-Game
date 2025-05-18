@@ -123,7 +123,7 @@ function App() {
 
     setTimeout(() => {
       addStatusesandClasses(); // THEN apply colors mid-flip
-    }, 300); // Match the halfway point of your flip animation
+    }, 300);
 
     // Use the state setter to update the row index so that a user will move to the next empty array
     setCurrentRowIndex((prevRowIndex) => {
@@ -171,7 +171,7 @@ function App() {
       setTimeout(() => {
         setClassNames((prevClassNames) => {
           let newClassNames = [...prevClassNames];
-          let updatedStatuses = [...newStatuses]; // same status array you built
+          let updatedStatuses = [...newStatuses];
 
           const status = updatedStatuses[i];
 
@@ -226,7 +226,7 @@ function App() {
       setTimeout(() => {
         bounceWinRow(); // <- now starts AFTER color is visible
       }, 1200); // tweak this as needed
-    }, 300); // Adjust based on your flip duration
+    }, 300);
 
     setGameWon(true);
   };
