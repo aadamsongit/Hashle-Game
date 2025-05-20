@@ -3,6 +3,7 @@ import "./index.css";
 import data from "./data.json";
 import Header from "./components/Header.jsx";
 import { getRandomWord } from "./utils/getRandomWord";
+import { useDarkMode } from "./hooks/useDarkMode";
 
 function App() {
   // Create states: the default word, a user's guessed word, the array of guesses, index of a guessed word
@@ -27,28 +28,10 @@ function App() {
   const [keyStatuses, setKeyStatuses] = useState({});
   const [disabledLetters, setDisabledLetters] = useState([]);
 
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, handleToggle] = useDarkMode();
   const [revealingTiles, setRevealingTiles] = useState({});
   const [bounceRowIndex, setBounceRowIndex] = useState(null);
   const [bounceTiles, setBounceTiles] = useState({});
-
-  useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add("dark-mode");
-    } else {
-      document.body.classList.remove("dark-mode");
-    }
-    // Store the preference in local storage
-    localStorage.setItem("darkMode", JSON.stringify(darkMode));
-  }, [darkMode]);
-
-  useEffect(() => {
-    // Retrieve the preference from local storage on component mount
-    const storedDarkMode = JSON.parse(localStorage.getItem("darkMode"));
-    if (storedDarkMode !== null) {
-      setDarkMode(storedDarkMode);
-    }
-  }, []);
 
   // Hold the currentWord when the component mounts to prevent re-rendering of the default word
   // Also normalize the default word with uppercase letters
@@ -57,10 +40,6 @@ function App() {
     console.log("New random word set inside useEffect:", newWord);
     setCurrentWord(newWord);
   }, []); // empty array is correct since data is static
-
-  const handleToggle = () => {
-    setDarkMode(!darkMode);
-  };
 
   // Convert the word from a string to an array so we can map the letters
   const currentWordArray = currentWord.split("");
