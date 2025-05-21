@@ -8,9 +8,18 @@ import { useDarkMode } from "./hooks/useDarkMode";
 function App() {
   // Create states: the default word, a user's guessed word, the array of guesses, index of a guessed word
   const [currentWord, setCurrentWord] = useState("PLACE");
-  const [guessedWord, setGuessedWord] = useState([]);
-  const [allGuesses, setAllGuesses] = useState([]);
-  const [currentRowIndex, setCurrentRowIndex] = useState(0);
+
+  const [gameProgress, setGameProgress] = useState({
+    guessedWord: [],
+    allGuesses: [],
+    currentRowIndex: 0,
+    gameWon: false,
+    gameLoss: false,
+  });
+
+  // const [guessedWord, setGuessedWord] = useState([]);
+  // const [allGuesses, setAllGuesses] = useState([]);
+  // const [currentRowIndex, setCurrentRowIndex] = useState(0);
 
   // Create states: index of row for shake effect, toastMessage for conditional rendering of toast
   const [shakeRowIndex, setShakeRowIndex] = useState(null);
@@ -52,10 +61,13 @@ function App() {
   const guessWord = (letter) => {
     // Slice method to delete letters
     if (letter === "Delete" && !gameWon) {
-      setGuessedWord((prev) => prev.slice(0, -1));
+      setGameProgress((prev) => ({
+        ...prev,
+        guessedWord: prev.guessedWord.slice(0, -1),
+      }));
     } else if (letter === "Enter") {
       //Convert the guessedWord to a string so it can be compared to the currentWord value
-      const guessedWordStr = guessedWord.join("");
+      const guessedWordStr = gameProgress.guessedWord.join("");
       // Create a variable to check whether a user's guess is in the word list
       const isValidWord = data
         .map(({ word }) => word.toLowerCase())
@@ -76,11 +88,14 @@ function App() {
       }
     } else {
       // Do not let a user add letters beyond the length of the currentWord
-      if (guessedWord.length === currentWord.length) {
+      if (gameProgress.guessedWord.length === currentWord.length) {
         null;
         // If a "letter" isn't Delete or Enter and the length is below currentWord length, set the guessedWord state by adding letters to the array
       } else {
-        setGuessedWord((prev) => [...prev, letter]);
+        setGameProgress((prev) => ({
+          ...prev,
+          guessedWord: [...prev.guessedWord, letter],
+        }));
       }
     }
   };
@@ -88,13 +103,16 @@ function App() {
   // Function to update the array of guesses (allGuesses)
   const addtoGuessandReset = () => {
     // Create a shallow copy of guesses to store previous guesses and update the state to add to newGuesses when the function is called
-    setAllGuesses((prevGuesses) => {
-      let newGuesses = [...prevGuesses];
+    setGameProgress((prev) => {
+      let newGuesses = [...prev.allGuesses];
       // The guessedWord array is spread with a shallow copy
-      const copyOfGuessedWord = [...guessedWord];
+      const copyOfGuessedWord = [...prev.guessedWord];
       // The guessedWord, as a copy, is added as an array to the array of arrays
-      newGuesses[currentRowIndex] = copyOfGuessedWord;
-      return newGuesses;
+      newGuesses[prev.currentRowIndex] = copyOfGuessedWord;
+      return {
+        ...prev, // keep other properties unchanged
+        allGuesses: newGuesses, // update allGuesses with new array
+      };
     });
 
     // Call addStatusesandClasses to add styling for the guessed letters based on whether they are correct, present, or absent
