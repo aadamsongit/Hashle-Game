@@ -33,6 +33,8 @@ function App() {
   const [bounceRowIndex, setBounceRowIndex] = useState(null);
   const [bounceTiles, setBounceTiles] = useState({});
 
+  const [isRGBActive, setRGActive] = useState(false);
+
   // Hold the currentWord when the component mounts to prevent re-rendering of the default word
   // Also normalize the default word with uppercase letters
   useEffect(() => {
@@ -271,6 +273,10 @@ function App() {
     setAllGuesses([...allGuesses, ...missingRows]);
   }, [currentWord.length]); // Dependency array to trigger when state changes
 
+  const handleKeyboardToggle = () => {
+    setRGActive(!isRGBActive);
+  };
+
   const keyboardRows = [
     "QWERTYUIOP".split(""),
     "ASDFGHJKL".split(""),
@@ -341,9 +347,9 @@ function App() {
             : null;
 
         const combinedClass =
-          `min-w-0 shrink text-sm sm:text-lg px-2 sm:px-4 py-1 sm:py-2 ${gradientClass} ${buttonClass} ${
-            darkMode ? "dark-mode" : ""
-          }`.trim();
+          `min-w-0 shrink text-sm sm:text-lg px-2 sm:px-4 py-1 sm:py-2 ${
+            isRGBActive ? gradientClass : ""
+          } ${buttonClass} ${darkMode ? "dark-mode" : ""}`.trim();
 
         return (
           <button
@@ -354,7 +360,7 @@ function App() {
             }}
             disabled={disabledLetters.includes(letter)}
           >
-            <span className={rainbowLetter}>{letter}</span>
+            <span className={isRGBActive ? rainbowLetter : ""}>{letter}</span>
           </button>
         );
       })}
@@ -435,6 +441,9 @@ function App() {
       ))}
       {/* Keyboard Section */}
       <section className="text-center mt-16">{keyboardElements}</section>
+      <div class="text-center">
+        <button onClick={handleKeyboardToggle}>RGB KEYBOARD: TURN ON</button>
+      </div>
     </main>
   );
 }
