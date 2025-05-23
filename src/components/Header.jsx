@@ -15,10 +15,12 @@ function Header({ handleToggle, toastMessage }) {
       )}
 
       {/* Title For Application*/}
-      <div className="flex justify-center mt-16 mb-8">
-        <div className="w-full max-w-[90%] sm:max-w-[660px]">
-          <h1 className="sm:text-3xl font-bold terminal-title text-sm pl-[30px] sm:pl-0">
-            🚀Hashle: An Evolving Word Game
+      <div className="flex justify-center mt-16 sm:mb-8">
+        <div className="w-full max-w-[660px]">
+          <h1 className="sm:text-3xl font-bold text-sm pl-[50px] sm:pl-0">
+            <span className="terminal-title">
+              🚀Hashle: An Evolving Word Game
+            </span>
           </h1>
         </div>
       </div>

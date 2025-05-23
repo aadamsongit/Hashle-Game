@@ -33,7 +33,7 @@ function App() {
   const [bounceRowIndex, setBounceRowIndex] = useState(null);
   const [bounceTiles, setBounceTiles] = useState({});
 
-  const [isRGBActive, setRGActive] = useState(false);
+  const [isRGBActive, setRGBActive] = useState(false);
 
   // Hold the currentWord when the component mounts to prevent re-rendering of the default word
   // Also normalize the default word with uppercase letters
@@ -41,7 +41,7 @@ function App() {
     const newWord = getRandomWord(data).toUpperCase();
     console.log("New random word set inside useEffect:", newWord);
     setCurrentWord(newWord);
-  }, []); // empty array is correct since data is static
+  }, []);
 
   // Convert the word from a string to an array so we can map the letters
   const currentWordArray = currentWord.split("");
@@ -145,7 +145,6 @@ function App() {
         newStatuses[i] = "absent";
       }
     }
-    console.log("New statuses before state update:", newStatuses);
 
     setLetterStatuses(newStatuses);
     for (let i = 0; i < guessedWord.length; i++) {
@@ -206,7 +205,7 @@ function App() {
       // 💡 Delay bounce slightly after styling is fully applied
       setTimeout(() => {
         bounceWinRow(); // <- now starts AFTER color is visible
-      }, 1200); // tweak this as needed
+      }, 1200);
     }, 300);
 
     setGameWon(true);
@@ -227,7 +226,6 @@ function App() {
   //set up a loss function
   const triggerLoss = () => {
     addStatusesandClasses();
-    console.log("triggerLoss function is running");
     setGameLoss(true);
   };
 
@@ -258,7 +256,7 @@ function App() {
       }, i * 300); // 300ms between flips
     }
 
-    // Optional: clear revealing after the full animation is done
+    // Add a delay to remove the revealing class after the last tile has flipped
     setTimeout(() => {
       setRevealingTiles({});
     }, guessedWord.length * 300 + 600); // small buffer after final tile
@@ -274,7 +272,7 @@ function App() {
   }, [currentWord.length]); // Dependency array to trigger when state changes
 
   const handleKeyboardToggle = () => {
-    setRGActive(!isRGBActive);
+    setRGBActive(!isRGBActive);
   };
 
   const keyboardRows = [
@@ -372,7 +370,6 @@ function App() {
   const emptyRowIndex = allGuesses.findIndex((row) =>
     row.every((element) => element === "" || element === "_")
   );
-  console.log(emptyRowIndex);
 
   const triggerShakeEffect = () => {
     setShakeRowIndex(emptyRowIndex); // Set the row that should shake
@@ -418,7 +415,9 @@ function App() {
             return (
               <span
                 key={key}
-                className={`tile sm:w-10 sm:h-10 w-6 h-6 border-2 border-indigo-500/50 inline-block align-middle
+                className={`tile sm:w-12 sm:h-12 w-6 h-6 border-2 mx-0.5 my-0.5 inline-block align-middle ${
+                  darkMode ? "border-indigo-300/50" : "border-indigo-500/50"
+                }
     ${
       classNames[index]?.[key] === "bg-green"
         ? "bg-green"
@@ -440,8 +439,10 @@ function App() {
         </section>
       ))}
       {/* Keyboard Section */}
-      <section className="text-center mt-16">{keyboardElements}</section>
-      <div class="text-center">
+      <section className="text-center sm:mt-16 mt-10">
+        {keyboardElements}
+      </section>
+      <div class="text-center mt-5">
         <button onClick={handleKeyboardToggle}>RGB KEYBOARD: TURN ON</button>
       </div>
     </main>

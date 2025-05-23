@@ -126,6 +126,16 @@ button:focus-visible {
     blink-caret 0.5s step-end infinite;  /* Blinking cursor effect */
 }
 
+@media (max-width: 640px) {
+  .terminal-title {
+    max-width: 310px;
+    box-sizing: border-box;
+    overflow: hidden;
+    display: inline-block;
+    /* keep inline-block */
+  }
+}
+
 @keyframes typing {
   from { 
     width: 0; /* Start with no visible text */
@@ -561,6 +571,23 @@ input:checked + .slider:before {
   transform-style: preserve-3d;
   transition: transform 0.6s ease;
   transform: rotateX(0deg);
+  font-weight: 700;
+  /* bold */
+  font-family: 'Arial', sans-serif;
+  text-transform: uppercase;
+  user-select: none;
+  display: inline-block;
+  /* keep them inline */
+  width: 2.5rem;
+  /* example size, adjust as needed */
+  height: 2.5rem;
+  line-height: 2.5rem;
+  /* vertically centers text */
+  text-align: center;
+  /* horizontally centers text */
+  vertical-align: middle;
+  /* aligns with baseline */
+  letter-spacing: 0.1em;
 }
 
 .tile.revealing {
