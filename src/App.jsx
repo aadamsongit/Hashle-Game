@@ -345,7 +345,7 @@ function App() {
             : null;
 
         const combinedClass =
-          `min-w-0 shrink text-sm sm:text-lg px-2 sm:px-4 py-1 sm:py-2 ${
+          `min-w-0 shrink text-sm text-lg px-2 sm:px-4 py-1 sm:py-2 ${
             isRGBActive ? gradientClass : ""
           } ${buttonClass} ${darkMode ? "dark-mode" : ""}`.trim();
 
