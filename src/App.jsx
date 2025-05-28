@@ -39,7 +39,6 @@ function App() {
   // Also normalize the default word with uppercase letters
   useEffect(() => {
     const newWord = getRandomWord(data).toUpperCase();
-    console.log("New random word set inside useEffect:", newWord);
     setCurrentWord(newWord);
   }, []);
 
@@ -190,8 +189,7 @@ function App() {
         newKeyStatuses[letter] = "absent";
         updateDisabledLetters(letter);
       }
-    console.log(letterCount);
-    console.log("Key statuses:", newKeyStatuses);
+    // Update the keyStatuses state with the new statuses
     setKeyStatuses(newKeyStatuses);
   };
 
@@ -282,7 +280,7 @@ function App() {
   ];
   // keyboard elements: nested map to iterate over elements in nested arrays
   const keyboardElements = keyboardRows.map((row, rowIndex) => (
-    <div key={rowIndex} className="keyboard-row">
+    <div key={rowIndex} className="keyboard-row pb-1">
       {row.map((letter, letterIndex) => {
         // class for letter styling
         const buttonClass =
@@ -387,7 +385,7 @@ function App() {
   };
 
   return (
-    <main className={`${darkMode ? "dark-mode" : ""}`}>
+    <main className={`sm:pb-10 ${darkMode ? "dark-mode" : ""}`}>
       <Header handleToggle={handleToggle} toastMessage={toastMessage} />
       {/* { This section shows toasts for wins or losses based on conditional win/loss logic */}
       <section>
@@ -443,7 +441,9 @@ function App() {
         {keyboardElements}
       </section>
       <div class="text-center mt-5">
-        <button onClick={handleKeyboardToggle}>RGB KEYBOARD: TURN ON</button>
+        <button onClick={handleKeyboardToggle}>
+          RGB KEYBOARD: TURN {isRGBActive ? "OFF" : "ON"}
+        </button>
       </div>
     </main>
   );
