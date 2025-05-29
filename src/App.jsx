@@ -30,7 +30,6 @@ function App() {
 
   const [darkMode, handleToggle] = useDarkMode();
   const [revealingTiles, setRevealingTiles] = useState({});
-  const [bounceRowIndex, setBounceRowIndex] = useState(null);
   const [bounceTiles, setBounceTiles] = useState({});
 
   const [isRGBActive, setRGBActive] = useState(false);
@@ -78,7 +77,7 @@ function App() {
     } else {
       // Do not let a user add letters beyond the length of the currentWord
       if (guessedWord.length === currentWord.length) {
-        null;
+        return;
         // If a "letter" isn't Delete or Enter and the length is below currentWord length, set the guessedWord state by adding letters to the array
       } else {
         setGuessedWord((prev) => [...prev, letter]);
@@ -116,7 +115,7 @@ function App() {
 
   // Function to create logic for styling letters of guessed words (correct/present/absent)
   const addStatusesandClasses = () => {
-    //
+    // Create a new array to hold the statuses of each letter in the guessed word
     let newStatuses = Array(guessedWord.length).fill("");
     // Initialize an empty object to keep track of guesses
     let letterCount = {};
@@ -128,8 +127,10 @@ function App() {
       } else {
         // Initialize the letter if it's not already in the object
         letterCount[letter] = 1;
-        // If the index of a guessed letter equals the index of the letter in the currentWord array, add "correct" to newStatuses at the index
+        // Set the letterCount object to 1 if it is the first instance of the letter
       }
+      // If the letter in the guessedWord matches the letter in the currentWord at the same index, add "correct" to newStatuses at that index
+      // This will ensure that the letter is marked as "correct" only if it is at the same index
       if (guessedWord[i] == currentWordArray[i]) {
         newStatuses[i] = "correct";
         // Now decrement the letterCount object to account for present/absent numbers logic check
@@ -139,12 +140,16 @@ function App() {
     for (const [i, letter] of guessedWord.entries()) {
       if (letterCount[letter] > 0 && newStatuses[i] !== "correct") {
         newStatuses[i] = "present";
+        // If the letter is present in the currentWord but not at the same index, add "present" to newStatuses at the index
+        // Decrement the letterCount object to account for the present letter
         letterCount[letter]--;
       } else if (newStatuses[i] !== "correct") {
         newStatuses[i] = "absent";
       }
     }
 
+    // Update the letterStatuses state with the new statuses
+    // This will trigger a re-render of the component with the new statuses
     setLetterStatuses(newStatuses);
     for (let i = 0; i < guessedWord.length; i++) {
       setTimeout(() => {
@@ -152,12 +157,15 @@ function App() {
           let newClassNames = [...prevClassNames];
           let updatedStatuses = [...newStatuses];
 
+          // Update the classNames for the current row based on the letterStatuses
           const status = updatedStatuses[i];
 
           if (!newClassNames[currentRowIndex]) {
             newClassNames[currentRowIndex] = Array(guessedWord.length).fill("");
           }
 
+          // Apply the classNames based on the status of the letter
+          // This will apply the classNames for the current row based on the letterStatuses
           if (status === "correct") {
             newClassNames[currentRowIndex][i] = "bg-green";
           } else if (status === "present") {
@@ -168,10 +176,12 @@ function App() {
 
           return newClassNames;
         });
-      }, i * 300); // Delay each letter's className update by 300ms
+      }, i * 300); // Delay each letter's className update by 300ms (so they animate after the flip)
     }
 
     // loop for logic for keyboard UI styling
+    // This styles the keyboard keys (not the board tiles) based on the guessed letters
+    // Create a new object to hold the key statuses
     const newKeyStatuses = { ...keyStatuses };
     for (const [i, letter] of guessedWord.entries())
       if (guessedWord[i] === currentWordArray[i]) {
@@ -187,12 +197,18 @@ function App() {
         newKeyStatuses[letter] !== "present"
       ) {
         newKeyStatuses[letter] = "absent";
+        // If the letter is not in the currentWord, mark it as "absent"
+        // and update the disabledLetters state to disable the letter on the keyboard
+        // This prevents the user from guessing the same letter again
         updateDisabledLetters(letter);
       }
     // Update the keyStatuses state with the new statuses
     setKeyStatuses(newKeyStatuses);
   };
 
+  //set up a win function
+  // This function will be called when the user guesses the correct word
+  // It will trigger the win animation and update the game state
   const triggerWin = () => {
     handleGuessReveal(); // Start the flip animation
 
@@ -209,6 +225,8 @@ function App() {
     setGameWon(true);
   };
 
+  // Function to handle the bounce animation for the winning row
+  // This function will apply the bounce animation to each tile in the winning row
   const bounceWinRow = () => {
     // For each letter, stagger bounce AFTER its own flip settles
     currentWordArray.forEach((_, i) => {
@@ -232,9 +250,9 @@ function App() {
     setDisabledLetters((prev) => [...prev, letter]);
   };
 
-  useEffect(() => {
-    console.log("Updated gameWon state:", gameWon);
-  }, [gameWon]);
+  // useEffect to handle the game won state
+  // This effect will run when the gameWon state changes
+  useEffect(() => {}, [gameWon]);
 
   useEffect(() => {
     if (currentRowIndex === 6) {
@@ -242,13 +260,15 @@ function App() {
     }
   }, [currentRowIndex]);
 
+  // Handle the guess reveal animation
+  // This function will flip the tiles one by one with a delay
   const handleGuessReveal = () => {
-    const reveals = {};
-
     for (let i = 0; i < guessedWord.length; i++) {
       setTimeout(() => {
         setRevealingTiles((prev) => ({
           ...prev,
+          // This creates a unique key for each tile based on the current row and index
+          // This allows us to apply the revealing class to each tile individually
           [`${currentRowIndex}-${i}`]: true,
         }));
       }, i * 300); // 300ms between flips
@@ -269,6 +289,8 @@ function App() {
     setAllGuesses([...allGuesses, ...missingRows]);
   }, [currentWord.length]); // Dependency array to trigger when state changes
 
+  // Function to handle the keyboard toggle for RGB effect
+  // This toggles the RGB effect on the keyboard
   const handleKeyboardToggle = () => {
     setRGBActive(!isRGBActive);
   };
@@ -363,8 +385,6 @@ function App() {
     </div>
   ));
 
-  console.log(guessedWord);
-
   const emptyRowIndex = allGuesses.findIndex((row) =>
     row.every((element) => element === "" || element === "_")
   );
@@ -374,7 +394,6 @@ function App() {
     setTimeout(() => {
       setShakeRowIndex(null); // Reset it after 500ms
     }, 600);
-    console.log("Shake triggered!");
   };
 
   const showToast = () => {
