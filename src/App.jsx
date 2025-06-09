@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import "./index.css";
 import data from "./data.json";
 import Header from "./components/Header.jsx";
-import { getRandomWord } from "./utils/getRandomWord";
+import { getDailyWord } from "./utils/getRandomWord";
 import { useDarkMode } from "./hooks/useDarkMode";
 
 function App() {
@@ -37,7 +37,8 @@ function App() {
   // Hold the currentWord when the component mounts to prevent re-rendering of the default word
   // Also normalize the default word with uppercase letters
   useEffect(() => {
-    const newWord = getRandomWord(data).toUpperCase();
+    console.log("useEffect fired, data:", data);
+    const newWord = getDailyWord(data).toUpperCase();
     setCurrentWord(newWord);
   }, []);
 
@@ -97,10 +98,12 @@ function App() {
       return newGuesses;
     });
 
-    // Call addStatusesandClasses to add styling for the guessed letters based on whether they are correct, present, or absent
+    // Call the handleGuessReveal function to start the flip animation
+    // This will flip the tiles one by one with a delay
     handleGuessReveal(); // start the flip first
 
     setTimeout(() => {
+      // Call addStatusesandClasses to add styling for the guessed letters based on whether they are correct, present, or absent
       addStatusesandClasses(); // THEN apply colors mid-flip
     }, 300);
 
@@ -250,10 +253,8 @@ function App() {
     setDisabledLetters((prev) => [...prev, letter]);
   };
 
-  // useEffect to handle the game won state
-  // This effect will run when the gameWon state changes
-  useEffect(() => {}, [gameWon]);
-
+  // Effect to trigger the loss condition when the user reaches the maximum number of guesses
+  // This effect will check if the currentRowIndex reaches the maximum number of guesses (6)
   useEffect(() => {
     if (currentRowIndex === 6) {
       triggerLoss();
@@ -280,6 +281,8 @@ function App() {
     }, guessedWord.length * 300 + 600); // small buffer after final tile
   };
 
+  // Effect to create missing rows based on the current word length
+  // This effect will ensure that the number of rows in allGuesses matches the length of the current word
   useEffect(() => {
     // Add logic to create missing rows
     let missingRows = [];
