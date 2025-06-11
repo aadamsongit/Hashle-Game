@@ -131,7 +131,9 @@ button:focus-visible {
     max-width: 310px;
     box-sizing: border-box;
     overflow: hidden;
-    display: inline-block;
+    display: block;
+    text-align: center;
+    white-space: normal;
     /* keep inline-block */
   }
 }

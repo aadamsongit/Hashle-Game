@@ -4,12 +4,26 @@ import data from "./data.json";
 import Header from "./components/Header.jsx";
 import { getDailyWord } from "./utils/getRandomWord";
 import { useDarkMode } from "./hooks/useDarkMode";
+import { rebuildStatuses } from "./utils/rebuildStatuses";
 
 function App() {
   // Create states: the default word, a user's guessed word, the array of guesses, index of a guessed word
   const [currentWord, setCurrentWord] = useState("PLACE");
   const [guessedWord, setGuessedWord] = useState([]);
-  const [allGuesses, setAllGuesses] = useState([]);
+  const [allGuesses, setAllGuesses] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("dailyResults") || "{}");
+      const dayIndex = getDayIndex();
+      const todayData = saved[dayIndex];
+      if (todayData?.boardState && Array.isArray(todayData.boardState)) {
+        return todayData.boardState; // Use saved board if it exists
+      }
+    } catch (e) {
+      console.warn("Failed to load saved boardState", e);
+    }
+    return []; // Start empty so your useEffect adds rows dynamically
+  });
+
   const [currentRowIndex, setCurrentRowIndex] = useState(0);
 
   // Create states: index of row for shake effect, toastMessage for conditional rendering of toast
@@ -34,23 +48,101 @@ function App() {
 
   const [isRGBActive, setRGBActive] = useState(false);
 
+  const [hasHydrated, setHasHydrated] = useState(false);
+
   // Hold the currentWord when the component mounts to prevent re-rendering of the default word
   // Also normalize the default word with uppercase letters
   useEffect(() => {
-    console.log("useEffect fired, data:", data);
+    console.log("🔥 Hydration useEffect fired");
+
     const newWord = getDailyWord(data).toUpperCase();
     setCurrentWord(newWord);
+
+    const dayIndex = getDayIndex();
+    const savedData = JSON.parse(localStorage.getItem("dailyResults") || "{}");
+    const todayData = savedData[dayIndex];
+
+    console.log("🧠 Restored boardState:", todayData?.boardState);
+    console.log("🏁 Restored outcome:", todayData?.outcome);
+    console.log("📅 Day index:", dayIndex);
+
+    // Only update allGuesses if it wasn't initialized from localStorage already
+    setAllGuesses((prevAllGuesses) => {
+      if (prevAllGuesses.length === 0 && todayData?.boardState) {
+        return todayData.boardState;
+      }
+      return prevAllGuesses;
+    });
+
+    // If boardState exists, update other game states accordingly
+    if (todayData?.boardState) {
+      const lastFilledIndex = todayData.boardState.findIndex((row) =>
+        row.every((cell) => cell === "")
+      );
+      setCurrentRowIndex(
+        lastFilledIndex === -1 ? todayData.boardState.length : lastFilledIndex
+      );
+
+      // 🧠 Rebuild styles for tiles and keyboard
+      const { classNames, keyStatuses } = rebuildStatuses(
+        todayData.boardState,
+        newWord
+      );
+      setClassNames(classNames); // ⬅️ Tile backgrounds (green/yellow/gray)
+      setKeyStatuses(keyStatuses); // ⬅️ Keyboard key styling
+
+      if (todayData.outcome === "win") {
+        setGameWon(true);
+      } else if (todayData.outcome === "loss") {
+        setGameLoss(true);
+      }
+    }
+
+    setHasHydrated(true); // ✅ Tell app we're hydrated
   }, []);
+
+  useEffect(() => {
+    if (!hasHydrated) return;
+
+    const status = gameWon ? "win" : gameLoss ? "loss" : "in_progress";
+    saveToLocalStorage(allGuesses, status, getDayIndex());
+  }, [allGuesses, hasHydrated, gameWon, gameLoss]);
+
+  useEffect(() => {
+    console.log("📦 allGuesses:", allGuesses);
+    console.log("📍 currentRowIndex:", currentRowIndex);
+    console.log("🏆 gameWon:", gameWon, "❌ gameLoss:", gameLoss);
+  }, [allGuesses, currentRowIndex, gameWon, gameLoss]);
 
   // Convert the word from a string to an array so we can map the letters
   const currentWordArray = currentWord.split("");
   // Create a blank array with the same letter count as the current word
   const wordRow = currentWordArray.map((letter) => "");
 
+  // Function to get the current day index based on the start date
+  function getDayIndex() {
+    const today = new Date(Date.now()); // Or just: new Date()
+    const start = new Date(Date.UTC(2023, 0, 1)); // Match the daily word logic
+    const diffTime = today - start;
+    return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  }
+  // Function to save the board state to localStorage
+  function saveToLocalStorage(boardState, outcome, dayIndex) {
+    const storedData = JSON.parse(localStorage.getItem("dailyResults")) || {};
+    storedData[dayIndex] = {
+      boardState,
+      outcome,
+      dayIndex,
+      date: new Date().toISOString(),
+    };
+    localStorage.setItem("dailyResults", JSON.stringify(storedData));
+  }
+
   // Function for a user to add letters to the board and guess a word
 
   // Pass in "letter" from the keyboard map
   const guessWord = (letter) => {
+    if (gameWon || gameLoss) return;
     // Slice method to delete letters
     if (letter === "Delete" && !gameWon) {
       setGuessedWord((prev) => prev.slice(0, -1));
@@ -67,6 +159,7 @@ function App() {
         // If the user's guessed word matches the current word (default word), trigger the win condition
       } else if (guessedWordStr === currentWord) {
         triggerWin();
+        return;
         // If the user guesses a word in the list but it's not the correct word, call the addtoGuessandReset function
       } else if (isValidWord) {
         addtoGuessandReset();
@@ -88,13 +181,19 @@ function App() {
 
   // Function to update the array of guesses (allGuesses)
   const addtoGuessandReset = () => {
+    const dayIndex = getDayIndex();
     // Create a shallow copy of guesses to store previous guesses and update the state to add to newGuesses when the function is called
     setAllGuesses((prevGuesses) => {
+      if (!hasHydrated) return prevGuesses; // Prevents re-rendering before hydration
       let newGuesses = [...prevGuesses];
       // The guessedWord array is spread with a shallow copy
       const copyOfGuessedWord = [...guessedWord];
       // The guessedWord, as a copy, is added as an array to the array of arrays
       newGuesses[currentRowIndex] = copyOfGuessedWord;
+
+      // Save immediately using the updated guesses, since state isn't updated yet
+      saveToLocalStorage(newGuesses, "in_progress", dayIndex);
+
       return newGuesses;
     });
 
@@ -106,6 +205,8 @@ function App() {
       // Call addStatusesandClasses to add styling for the guessed letters based on whether they are correct, present, or absent
       addStatusesandClasses(); // THEN apply colors mid-flip
     }, 300);
+
+    if (gameWon || gameLoss) return;
 
     // Use the state setter to update the row index so that a user will move to the next empty array
     setCurrentRowIndex((prevRowIndex) => {
@@ -213,19 +314,26 @@ function App() {
   // This function will be called when the user guesses the correct word
   // It will trigger the win animation and update the game state
   const triggerWin = () => {
-    handleGuessReveal(); // Start the flip animation
+    handleGuessReveal();
 
-    // After the flip completes, apply the classes
     setTimeout(() => {
-      addStatusesandClasses(); // Apply green/yellow/gray
-
-      // 💡 Delay bounce slightly after styling is fully applied
+      addStatusesandClasses();
       setTimeout(() => {
-        bounceWinRow(); // <- now starts AFTER color is visible
+        bounceWinRow();
       }, 1200);
     }, 300);
 
     setGameWon(true);
+
+    const updatedGuesses = [...allGuesses];
+    updatedGuesses[currentRowIndex] = [...guessedWord];
+
+    if (!hasHydrated) return;
+
+    const dayIndex = getDayIndex(); // ✅ FIXED
+    saveToLocalStorage(updatedGuesses, "win", dayIndex);
+    setAllGuesses(updatedGuesses);
+    setGuessedWord([]); // Clear the guessedWord after winning
   };
 
   // Function to handle the bounce animation for the winning row
@@ -242,10 +350,21 @@ function App() {
     });
   };
 
-  //set up a loss function
   const triggerLoss = () => {
     addStatusesandClasses();
     setGameLoss(true);
+
+    const updatedGuesses = [...allGuesses];
+    updatedGuesses[currentRowIndex] = [...guessedWord];
+
+    if (!hasHydrated) return;
+
+    const outcome = "loss";
+    const dayIndex = getDayIndex(); // ← you probably missed this line
+
+    saveToLocalStorage(updatedGuesses, outcome, dayIndex);
+    setAllGuesses(updatedGuesses); // Optional, but good for state consistency
+    setGuessedWord([]); // Clear the guessedWord after losing
   };
 
   // create a helper function for an array of disabled letters
@@ -284,13 +403,19 @@ function App() {
   // Effect to create missing rows based on the current word length
   // This effect will ensure that the number of rows in allGuesses matches the length of the current word
   useEffect(() => {
-    // Add logic to create missing rows
-    let missingRows = [];
-    for (let i = 0; i < currentWord.length + 1 - allGuesses.length; i++) {
-      missingRows.push(wordRow);
+    if (gameWon || gameLoss) return;
+
+    const desiredRows = currentWord.length + 1; // 6 for a 5-letter word
+    const currentRows = allGuesses.length;
+
+    if (currentRows < desiredRows) {
+      // Count how many rows are actually empty
+      const missingRows = Array(desiredRows - currentRows).fill(
+        Array(currentWord.length).fill("")
+      );
+      setAllGuesses([...allGuesses, ...missingRows]);
     }
-    setAllGuesses([...allGuesses, ...missingRows]);
-  }, [currentWord.length]); // Dependency array to trigger when state changes
+  }, [currentWord.length, allGuesses]);
 
   // Function to handle the keyboard toggle for RGB effect
   // This toggles the RGB effect on the keyboard
@@ -368,11 +493,11 @@ function App() {
             : null;
 
         const combinedClass =
-          `min-w-0 shrink text-sm text-lg px-2 sm:px-4 py-1 sm:py-2 ${
+          `min-w-0 shrink text-lg px-2 sm:px-4 py-1 sm:py-2 ${
             isRGBActive ? gradientClass : ""
           } ${buttonClass} ${darkMode ? "dark-mode" : ""}`.trim();
 
-        return (
+        return !hasHydrated ? null : (
           <button
             key={letterIndex}
             className={combinedClass}
@@ -406,7 +531,7 @@ function App() {
     }, 600);
   };
 
-  return (
+  return !hasHydrated ? null : (
     <main className={`sm:pb-10 ${darkMode ? "dark-mode" : ""}`}>
       <Header handleToggle={handleToggle} toastMessage={toastMessage} />
       {/* { This section shows toasts for wins or losses based on conditional win/loss logic */}
@@ -462,7 +587,7 @@ function App() {
       <section className="text-center sm:mt-16 mt-10">
         {keyboardElements}
       </section>
-      <div class="text-center mt-5">
+      <div className="text-center mt-5">
         <button onClick={handleKeyboardToggle}>
           RGB KEYBOARD: TURN {isRGBActive ? "OFF" : "ON"}
         </button>
