@@ -16,7 +16,6 @@ function shuffleArray(array, seed) {
 }
 
 export function getDailyWord(data) {
-  console.log("data:", data);
   const words = data.map(({ word }) => word);
   const now = new Date(Date.now());
   const epoch = new Date(Date.UTC(2023, 0, 1));
@@ -24,15 +23,8 @@ export function getDailyWord(data) {
     (Date.now() - Date.UTC(2023, 0, 1)) / (1000 * 60 * 60 * 24)
   );
 
-  // console.log("UTC Now:", now.toUTCString());
-  // console.log("Local Now:", now.toString());
-  // console.log("Epoch (UTC):", epoch.toUTCString());
-  // console.log("Day Difference:", diff);
-
   const shuffledWords = shuffleArray(words, 42); // Using a fixed seed for consistent shuffling
-  console.log("word list:", words);
   // Use the diff to select a word based on the shuffled array
-  console.log("shuffled list:", shuffledWords);
   const index = diff % shuffledWords.length;
 
   return shuffledWords[index];

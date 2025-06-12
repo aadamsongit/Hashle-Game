@@ -34,12 +34,8 @@ a:hover {
   --button-bg: black;
 }
 
-/* Remove default styles for Tailwind to style elements! */
 
 body {
-  /* margin: 0; */
-  /* display: flex; */
-  /* place-items: center; */
   min-width: 320px;
   min-height: 100vh;
   background-color: var(--background-color);
@@ -80,9 +76,7 @@ button:focus-visible {
   a:hover {
     color: #747bff;
   }
-  /* button {
-    background-color: #f9f9f9;
-  } */
+
 }
 
 @keyframes shake {
@@ -135,6 +129,10 @@ button:focus-visible {
     text-align: center;
     white-space: normal;
     /* keep inline-block */
+    border-right: none; /* Remove border for smaller screens */
+    animation: none; /* Disable animations on small screens */
+    padding-bottom: 3.5rem; /* Add some padding for better spacing */
+    font-size: 1.5rem; /* Adjust font size for smaller screens */
   }
 }
 
@@ -308,60 +306,60 @@ button:focus-visible {
 .group-1-class {
   position: relative;
   margin: 2px
-  /* other styling, maybe z-index: 0 to balance the -1 on ::before */
+  
 }
 
 .group-2-class {
   position: relative;
   margin: 2px
-  /* other styling, maybe z-index: 0 to balance the -1 on ::before */
+  
 }
 
 .group-3-class {
   position: relative;
   margin: 2px
-  /* other styling, maybe z-index: 0 to balance the -1 on ::before */
+  
 }
 
 .group-4-class {
   position: relative;
   margin: 2px
-  /* other styling, maybe z-index: 0 to balance the -1 on ::before */
+  
 }
 .group-5-class {
   position: relative;
   margin: 2px
-  /* other styling, maybe z-index: 0 to balance the -1 on ::before */
+  
 }
 
 .group-6-class {
   position: relative;
   margin: 2px
-  /* other styling, maybe z-index: 0 to balance the -1 on ::before */
+  
 }
 
 .group-7-class {
   position: relative;
   margin: 2px
-  /* other styling, maybe z-index: 0 to balance the -1 on ::before */
+  
 }
 
 .group-8-class {
   position: relative;
   margin: 2px
-  /* other styling, maybe z-index: 0 to balance the -1 on ::before */
+  
 }
 
 .group-9-class {
   position: relative;
   margin: 2px
-  /* other styling, maybe z-index: 0 to balance the -1 on ::before */
+  
 }
 
 .group-10-class {
   position: relative;
   margin: 2px
-  /* other styling, maybe z-index: 0 to balance the -1 on ::before */
+  
 }
 
 .letter-0-class {

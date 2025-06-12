@@ -53,18 +53,12 @@ function App() {
   // Hold the currentWord when the component mounts to prevent re-rendering of the default word
   // Also normalize the default word with uppercase letters
   useEffect(() => {
-    console.log("🔥 Hydration useEffect fired");
-
     const newWord = getDailyWord(data).toUpperCase();
     setCurrentWord(newWord);
 
     const dayIndex = getDayIndex();
     const savedData = JSON.parse(localStorage.getItem("dailyResults") || "{}");
     const todayData = savedData[dayIndex];
-
-    console.log("🧠 Restored boardState:", todayData?.boardState);
-    console.log("🏁 Restored outcome:", todayData?.outcome);
-    console.log("📅 Day index:", dayIndex);
 
     // Only update allGuesses if it wasn't initialized from localStorage already
     setAllGuesses((prevAllGuesses) => {
@@ -107,12 +101,6 @@ function App() {
     const status = gameWon ? "win" : gameLoss ? "loss" : "in_progress";
     saveToLocalStorage(allGuesses, status, getDayIndex());
   }, [allGuesses, hasHydrated, gameWon, gameLoss]);
-
-  useEffect(() => {
-    console.log("📦 allGuesses:", allGuesses);
-    console.log("📍 currentRowIndex:", currentRowIndex);
-    console.log("🏆 gameWon:", gameWon, "❌ gameLoss:", gameLoss);
-  }, [allGuesses, currentRowIndex, gameWon, gameLoss]);
 
   // Convert the word from a string to an array so we can map the letters
   const currentWordArray = currentWord.split("");
