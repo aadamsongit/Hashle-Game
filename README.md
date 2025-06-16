@@ -36,4 +36,4 @@ Hashle is a feature-rich, scalable Wordle-style game built with React, Vite, and
 
 🗄️ Database Integration: For storing game data, scores, and potentially user profiles.
 
-🌍 Localization Support: (Optional idea) Support for multiple languages in future versions.
+🌍 Localization Support: (Possibility) Support for multiple languages in future versions.
