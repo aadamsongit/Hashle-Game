@@ -21,3 +21,19 @@ Hashle is a feature-rich, scalable Wordle-style game built with React, Vite, and
 🧰 React Best Practices: Includes custom hooks (useDarkMode.js), utility functions, and clean component separation.
 
 📱 Responsive Design: Works seamlessly across desktop and mobile devices.
+
+# 🧪 Upcoming Features (Planned)
+
+📘 Game Info / Tutorial: In-app help for first-time players.
+
+🧪 Unit & E2E Testing: To be added using tools like Jest and possibly Playwright or Cypress.
+
+📊 Scoreboards: Track your performance or compare with friends.
+
+📤 Mobile Sharing: Share your results via mobile-optimized link or copy-paste.
+
+🧑‍🦽 Accessibility Improvements: Ongoing enhancements for screen reader support and keyboard navigation.
+
+🗄️ Database Integration: For storing game data, scores, and potentially user profiles.
+
+🌍 Localization Support: (Optional idea) Support for multiple languages in future versions.
