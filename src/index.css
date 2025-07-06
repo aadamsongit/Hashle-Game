@@ -120,9 +120,9 @@ button:focus-visible {
     blink-caret 0.5s step-end infinite;  /* Blinking cursor effect */
 }
 
-@media (max-width: 640px) {
+@media (max-width: 670px) {
   .terminal-title {
-    max-width: 310px;
+    max-width: 720;
     box-sizing: border-box;
     overflow: hidden;
     display: block;
@@ -133,6 +133,12 @@ button:focus-visible {
     animation: none; /* Disable animations on small screens */
     padding-bottom: 3.5rem; /* Add some padding for better spacing */
     font-size: 1.5rem; /* Adjust font size for smaller screens */
+  }
+}
+@media (max-width: 640px) {
+  .terminal-title {
+    max-width: 310px;
+    /* new larger width */
   }
 }
 

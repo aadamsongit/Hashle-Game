@@ -5,6 +5,11 @@ import Header from "./components/Header.jsx";
 import { getDailyWord } from "./utils/getRandomWord";
 import { useDarkMode } from "./hooks/useDarkMode";
 import { rebuildStatuses } from "./utils/rebuildStatuses";
+import {
+  isValidWord,
+  isValidWordLength,
+  isCorrectWord,
+} from "./utils/wordHelpers";
 
 function App() {
   // Create states: the default word, a user's guessed word, the array of guesses, index of a guessed word
@@ -131,31 +136,11 @@ function App() {
   // Pass in "letter" from the keyboard map
   const guessWord = (letter) => {
     if (gameWon || gameLoss) return;
-    // Slice method to delete letters
-    if (letter === "Delete" && !gameWon) {
-      setGuessedWord((prev) => prev.slice(0, -1));
+
+    if (letter === "Delete") {
+      handleDelete();
     } else if (letter === "Enter") {
-      //Convert the guessedWord to a string so it can be compared to the currentWord value
-      const guessedWordStr = guessedWord.join("");
-      // Create a variable to check whether a user's guess is in the word list
-      const isValidWord = data
-        .map(({ word }) => word.toLowerCase())
-        .includes(guessedWordStr.toLowerCase());
-      // If the guessed word is too short, trigger a shake effect
-      if (guessedWordStr.length !== currentWord.length) {
-        triggerShakeEffect();
-        // If the user's guessed word matches the current word (default word), trigger the win condition
-      } else if (guessedWordStr === currentWord) {
-        triggerWin();
-        return;
-        // If the user guesses a word in the list but it's not the correct word, call the addtoGuessandReset function
-      } else if (isValidWord) {
-        addtoGuessandReset();
-        // If the word is not in the list, show a toast message and also trigger the shake effect
-      } else {
-        showToast();
-        triggerShakeEffect();
-      }
+      handleEnter();
     } else {
       // Do not let a user add letters beyond the length of the currentWord
       if (guessedWord.length === currentWord.length) {
@@ -164,6 +149,30 @@ function App() {
       } else {
         setGuessedWord((prev) => [...prev, letter]);
       }
+    }
+  };
+
+  const handleDelete = () => {
+    // Slice method to delete letters
+    setGuessedWord((prev) => prev.slice(0, -1));
+  };
+
+  const handleEnter = () => {
+    // Convert the guessedWord to a string so it can be compared to the currentWord value
+    const guessedWordStr = guessedWord.join("");
+
+    if (!isValidWordLength(guessedWordStr, currentWord)) {
+      triggerShakeEffect();
+      return;
+    }
+
+    if (isCorrectWord(guessedWordStr, currentWord)) {
+      triggerWin();
+    } else if (isValidWord(guessedWordStr, data)) {
+      addtoGuessandReset();
+    } else {
+      showToast();
+      triggerShakeEffect();
     }
   };
 
