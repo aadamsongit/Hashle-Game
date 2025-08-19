@@ -6,7 +6,7 @@ import Header from "./components/Header.jsx";
 import { useDarkMode } from "./hooks/useDarkMode";
 import { useGameState } from "./hooks/useGameState";
 import { useWordLogic } from "./hooks/useWordLogic";
-import { useKeyboard } from "./hooks/useKeyboard";
+import { useKeyboard } from "./hooks/useKeyboard.jsx";
 import { useAnimations } from "./hooks/useAnimations";
 import { useGameBoard } from "./hooks/useGameBoard";
 import { rebuildStatuses } from "./utils/rebuildStatuses";

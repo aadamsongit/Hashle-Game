@@ -122,7 +122,7 @@ button:focus-visible {
 
 @media (max-width: 670px) {
   .terminal-title {
-    max-width: 720;
+    max-width: 500px;
     box-sizing: border-box;
     overflow: hidden;
     display: block;
@@ -230,20 +230,6 @@ button:focus-visible {
     100% { color: red; }
   }
 
-/* Special styling for letter P to make it stand out like Delete button */
-.special-p {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  font-weight: 600;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-}
-
-.special-p:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
 
 .game-won,
 .game-lost {
