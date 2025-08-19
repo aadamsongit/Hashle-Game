@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:a11y": "vitest run --reporter=verbose src/App.a11y.test.jsx",
+    "test:mobile": "vitest run --reporter=verbose src/mobile.a11y.test.jsx",
     "a11y:audit": "echo 'Accessibility audit tool ready. Use the HTML file in public/ folder.'"
   },
   "dependencies": {

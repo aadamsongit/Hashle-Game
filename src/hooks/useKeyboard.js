@@ -14,14 +14,14 @@ export const useKeyboard = () => {
   };
 
   const getGradientClass = (letterIndex) => {
-    if (letterIndex <= 10) {
+    if (letterIndex <= 8) {
       return "rainbow-bg";
     }
     return "";
   };
 
   const getRainbowLetterClass = (letterIndex) => {
-    if (letterIndex <= 9) {
+    if (letterIndex <= 7) {
       return "rainbow-text";
     }
     return "";

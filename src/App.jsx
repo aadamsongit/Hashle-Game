@@ -193,14 +193,14 @@ function App() {
             className={buttonClass}
             onClick={() => guessWord(letter)}
             disabled={disabledLetters.includes(letter)}
-            data-delay={letterIndex <= 10 ? letterIndex : ""}
+            data-delay={letterIndex <= 8 ? letterIndex : ""}
             aria-label={`Press letter ${letter}`}
             aria-pressed={false}
             type="button"
           >
             <span
               className={isRGBActive ? rainbowLetter : ""}
-              data-delay={letterIndex <= 9 ? letterIndex : ""}
+              data-delay={letterIndex <= 7 ? letterIndex : ""}
             >
               {letter}
             </span>
