@@ -37,6 +37,7 @@ function App() {
   const [toastMessage, setToastMessage] = useState(false);
 
   // Create states: letterStatuses array to track correct, present, absent, classNames to style CSS class names based on letterStatuses for board
+  // Note: letterStatuses is currently unused but kept for potential future use
   const [letterStatuses, setLetterStatuses] = useState([]);
   const [classNames, setClassNames] = useState([]);
 
@@ -60,6 +61,11 @@ function App() {
   // Also normalize the default word with uppercase letters
   useEffect(() => {
     const newWord = getDailyWord(data).toUpperCase();
+    console.log(
+      `Setting daily word: "${newWord}", Vowels: [${
+        newWord.match(/[AEIOUY]/g)?.join(", ") || "NONE"
+      }], Length: ${newWord.length}`
+    );
     setCurrentWord(newWord);
 
     const dayIndex = getDayIndex();
@@ -110,8 +116,8 @@ function App() {
 
   // Convert the word from a string to an array so we can map the letters
   const currentWordArray = currentWord.split("");
-  // Create a blank array with the same letter count as the current word
-  const wordRow = currentWordArray.map((letter) => "");
+  // Note: wordRow is currently unused but kept for potential future use
+  // const wordRow = currentWordArray.map((letter) => "");
 
   // Function to handle the user's guess
   // Pass in "letter" from the keyboard map
@@ -197,6 +203,14 @@ function App() {
 
   // Function to create logic for styling letters of guessed words (correct/present/absent)
   const addStatusesandClasses = () => {
+    // Debug: Log the current word and its vowels for troubleshooting
+    const vowels = currentWord.match(/[AEIOUY]/g) || [];
+    console.log(
+      `Current word: "${currentWord}", Vowels found: [${vowels.join(
+        ", "
+      )}], Word length: ${currentWord.length}`
+    );
+
     // Create a new array to hold the statuses of each letter in the guessed word
     let newStatuses = Array(guessedWord.length).fill("");
     // Initialize an empty object to keep track of guesses
@@ -213,7 +227,7 @@ function App() {
       }
       // If the letter in the guessedWord matches the letter in the currentWord at the same index, add "correct" to newStatuses at that index
       // This will ensure that the letter is marked as "correct" only if it is at the same index
-      if (guessedWord[i] == currentWordArray[i]) {
+      if (guessedWord[i] === currentWordArray[i]) {
         newStatuses[i] = "correct";
         // Now decrement the letterCount object to account for present/absent numbers logic check
         letterCount[letter]--;
@@ -265,7 +279,7 @@ function App() {
     // This styles the keyboard keys (not the board tiles) based on the guessed letters
     // Create a new object to hold the key statuses
     const newKeyStatuses = { ...keyStatuses };
-    for (const [i, letter] of guessedWord.entries())
+    for (const [i, letter] of guessedWord.entries()) {
       if (guessedWord[i] === currentWordArray[i]) {
         newKeyStatuses[letter] = "correct";
       } else if (
@@ -280,10 +294,11 @@ function App() {
       ) {
         newKeyStatuses[letter] = "absent";
         // If the letter is not in the currentWord, mark it as "absent"
-        // and update the disabledLetters state to disable the letter on the keyboard
+        // and update the disabledLetters state to disable the letter on the disabledLetters state to disable the letter on the keyboard
         // This prevents the user from guessing the same letter again
         updateDisabledLetters(letter);
       }
+    }
     // Update the keyStatuses state with the new statuses
     setKeyStatuses(newKeyStatuses);
   };
@@ -412,11 +427,11 @@ function App() {
       {row.map((letter, letterIndex) => {
         // class for letter styling
         const buttonClass =
-          keyStatuses[letter] == "correct"
+          keyStatuses[letter] === "correct"
             ? "bg-green"
-            : keyStatuses[letter] == "present"
+            : keyStatuses[letter] === "present"
             ? "bg-yellow"
-            : keyStatuses[letter] == "absent"
+            : keyStatuses[letter] === "absent"
             ? "bg-gray"
             : "";
 

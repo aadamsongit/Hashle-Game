@@ -1,5 +1,3 @@
-import data from "../data.json";
-
 export const isValidWord = (guessedWordStr, data) =>
   data
     .map(({ word }) => word.toLowerCase())

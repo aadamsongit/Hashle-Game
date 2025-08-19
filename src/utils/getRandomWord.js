@@ -17,8 +17,6 @@ function shuffleArray(array, seed) {
 
 export function getDailyWord(data) {
   const words = data.map(({ word }) => word);
-  const now = new Date(Date.now());
-  const epoch = new Date(Date.UTC(2023, 0, 1));
   const diff = Math.floor(
     (Date.now() - Date.UTC(2023, 0, 1)) / (1000 * 60 * 60 * 24)
   );
