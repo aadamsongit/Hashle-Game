@@ -10,6 +10,7 @@ import {
   isValidWordLength,
   isCorrectWord,
 } from "./utils/wordHelpers";
+import { getDayIndex, saveToLocalStorage } from "./utils/gameHelpers";
 
 function App() {
   // Create states: the default word, a user's guessed word, the array of guesses, index of a guessed word
@@ -112,27 +113,7 @@ function App() {
   // Create a blank array with the same letter count as the current word
   const wordRow = currentWordArray.map((letter) => "");
 
-  // Function to get the current day index based on the start date
-  function getDayIndex() {
-    const today = new Date(Date.now()); // Or just: new Date()
-    const start = new Date(Date.UTC(2023, 0, 1)); // Match the daily word logic
-    const diffTime = today - start;
-    return Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  }
-  // Function to save the board state to localStorage
-  function saveToLocalStorage(boardState, outcome, dayIndex) {
-    const storedData = JSON.parse(localStorage.getItem("dailyResults")) || {};
-    storedData[dayIndex] = {
-      boardState,
-      outcome,
-      dayIndex,
-      date: new Date().toISOString(),
-    };
-    localStorage.setItem("dailyResults", JSON.stringify(storedData));
-  }
-
-  // Function for a user to add letters to the board and guess a word
-
+  // Function to handle the user's guess
   // Pass in "letter" from the keyboard map
   const guessWord = (letter) => {
     if (gameWon || gameLoss) return;
