@@ -160,263 +160,54 @@ button:focus-visible {
   }
 }
 
-.group-0-class::before {
-  content: "";
-  position: absolute;
-  top: -3px;
-  right: -3px;
-  bottom: -3px;
-  left: -3px;
-  border-radius: 8px;
-  animation: rainbowPulse 3s linear infinite;
-  animation-delay: -2.0s;
-  z-index: -1;
-}
-
-.group-0-class {
+/* Rainbow background classes - DRY approach */
+.rainbow-bg {
   position: relative;
   margin: 2px;
 }
 
-.group-1-class::before {
+.rainbow-bg::before {
   content: "";
   position: absolute;
-  z-index: -1;
   top: -3px;
   right: -3px;
   bottom: -3px;
   left: -3px;
   border-radius: 8px;
   animation: rainbowPulse 3s linear infinite;
-  animation-delay: -1.8s;
-}
-
-.group-2-class::before {
-  content: "";
-  position: absolute;
   z-index: -1;
-  top: -3px;
-  right: -3px;
-  bottom: -3px;
-  left: -3px;
-  border-radius: 8px;
-  animation: rainbowPulse 3s linear infinite;
-  animation-delay: -1.6s;
 }
 
-.group-3-class::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  top: -3px;
-  right: -3px;
-  bottom: -3px;
-  left: -3px;
-  border-radius: 8px;
-  animation: rainbowPulse 3s linear infinite;
-  animation-delay: -1.4s;
-}
-
-.group-4-class::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  top: -3px;
-  right: -3px;
-  bottom: -3px;
-  left: -3px;
-  border-radius: 8px;
-  animation: rainbowPulse 3s linear infinite;
-  animation-delay: -1.2s;
-}
-
-.group-5-class::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  top: -3px;
-  right: -3px;
-  bottom: -3px;
-  left: -3px;
-  border-radius: 8px;
-  animation: rainbowPulse 3s linear infinite;
-  animation-delay: -1.0s;
-}
-
-.group-6-class::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  top: -3px;
-  right: -3px;
-  bottom: -3px;
-  left: -3px;
-  border-radius: 8px;
-  animation: rainbowPulse 3s linear infinite;
-  animation-delay: -0.8s;
-}
-
-.group-7-class::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  top: -3px;
-  right: -3px;
-  bottom: -3px;
-  left: -3px;
-  border-radius: 8px;
-  animation: rainbowPulse 3s linear infinite;
-  animation-delay: -0.6s;
-}
-
-.group-8-class::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  top: -3px;
-  right: -3px;
-  bottom: -3px;
-  left: -3px;
-  border-radius: 8px;
-  animation: rainbowPulse 3s linear infinite;
-  animation-delay: -0.4s;
-}
-
-.group-9-class::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  top: -3px;
-  right: -3px;
-  bottom: -3px;
-  left: -3px;
-  border-radius: 8px;
-  animation: rainbowPulse 3s linear infinite;
-  animation-delay: -0.2s;
-}
-
-.group-10-class::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  top: -3px;
-  right: -3px;
-  bottom: -3px;
-  left: -3px;
-  border-radius: 8px;
-  animation: rainbowPulse 3s linear infinite;
-  animation-delay: 0s;
-}
-
-
-.group-1-class {
-  position: relative;
-  margin: 2px
-  
-}
-
-.group-2-class {
-  position: relative;
-  margin: 2px
-  
-}
-
-.group-3-class {
-  position: relative;
-  margin: 2px
-  
-}
-
-.group-4-class {
-  position: relative;
-  margin: 2px
-  
-}
-.group-5-class {
-  position: relative;
-  margin: 2px
-  
-}
-
-.group-6-class {
-  position: relative;
-  margin: 2px
-  
-}
-
-.group-7-class {
-  position: relative;
-  margin: 2px
-  
-}
-
-.group-8-class {
-  position: relative;
-  margin: 2px
-  
-}
-
-.group-9-class {
-  position: relative;
-  margin: 2px
-  
-}
-
-.group-10-class {
-  position: relative;
-  margin: 2px
-  
-}
-
-.letter-0-class {
+/* Rainbow text classes - DRY approach */
+.rainbow-text {
   animation: textPulse 3s linear infinite;
-  animation-delay: -2.0s;
 }
 
-.letter-1-class {
-  animation: textPulse 3s linear infinite;
-  animation-delay: -1.8s;
-}
+/* Animation delays using data attributes */
+.rainbow-bg[data-delay="0"]::before { animation-delay: -2.0s; }
+.rainbow-bg[data-delay="1"]::before { animation-delay: -1.8s; }
+.rainbow-bg[data-delay="2"]::before { animation-delay: -1.6s; }
+.rainbow-bg[data-delay="3"]::before { animation-delay: -1.4s; }
+.rainbow-bg[data-delay="4"]::before { animation-delay: -1.2s; }
+.rainbow-bg[data-delay="5"]::before { animation-delay: -1.0s; }
+.rainbow-bg[data-delay="6"]::before { animation-delay: -0.8s; }
+.rainbow-bg[data-delay="7"]::before { animation-delay: -0.6s; }
+.rainbow-bg[data-delay="8"]::before { animation-delay: -0.4s; }
+.rainbow-bg[data-delay="9"]::before { animation-delay: -0.2s; }
+.rainbow-bg[data-delay="10"]::before { animation-delay: 0s; }
 
-.letter-2-class {
-  animation: textPulse 3s linear infinite;
-  animation-delay: -1.6s;
-}
+.rainbow-text[data-delay="0"] { animation-delay: -2.0s; }
+.rainbow-text[data-delay="1"] { animation-delay: -1.8s; }
+.rainbow-text[data-delay="2"] { animation-delay: -1.6s; }
+.rainbow-text[data-delay="3"] { animation-delay: -1.4s; }
+.rainbow-text[data-delay="4"] { animation-delay: -1.2s; }
+.rainbow-text[data-delay="5"] { animation-delay: -1.0s; }
+.rainbow-text[data-delay="6"] { animation-delay: -0.8s; }
+.rainbow-text[data-delay="7"] { animation-delay: -0.6s; }
+.rainbow-text[data-delay="8"] { animation-delay: -0.4s; }
+.rainbow-text[data-delay="9"] { animation-delay: -0.2s; }
 
-.letter-3-class {
-  animation: textPulse 3s linear infinite;
-  animation-delay: -1.4s;
-}
 
-.letter-4-class {
-  animation: textPulse 3s linear infinite;
-  animation-delay: -1.2s;
-}
-
-.letter-5-class {
-  animation: textPulse 3s linear infinite;
-  animation-delay: -1.0s;
-}
-
-.letter-6-class {
-  animation: textPulse 3s linear infinite;
-  animation-delay: -.8s;
-}
-
-.letter-7-class {
-  animation: textPulse 3s linear infinite;
-  animation-delay: -.6s;
-}
-
-.letter-8-class {
-  animation: textPulse 3s linear infinite;
-  animation-delay: -.4s;
-}
-
-.letter-9-class {
-  animation: textPulse 3s linear infinite;
-  animation-delay: -2.s;
-}
 
 @keyframes rainbowPulse {
   0%   { background-color: red; }
