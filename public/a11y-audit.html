@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hashle Game - Accessibility Audit</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.8.3/axe.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .violations {
+            background-color: #fee;
+            border: 1px solid #fcc;
+        }
+        .passes {
+            background-color: #efe;
+            border: 1px solid #cfc;
+        }
+        .incomplete {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+        }
+        .violation-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 3px;
+        }
+        .pass-item {
+            margin: 5px 0;
+            padding: 5px;
+            background: white;
+            border-radius: 3px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Hashle Game Accessibility Audit</h1>
+    
+    <p>This tool will analyze your Hashle game for accessibility issues using axe-core.</p>
+    
+    <div>
+        <button onclick="runAudit()">Run Accessibility Audit</button>
+        <button onclick="clearResults()">Clear Results</button>
+    </div>
+    
+    <div id="results"></div>
+    
+    <script>
+        function runAudit() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="loading">Running accessibility audit... Please wait.</div>';
+            
+            // Run axe-core audit
+            axe.run()
+                .then(results => {
+                    displayResults(results);
+                })
+                .catch(error => {
+                    resultsDiv.innerHTML = `<div class="violations">Error running audit: ${error.message}</div>`;
+                });
+        }
+        
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('results');
+            let html = '<h2>Audit Results</h2>';
+            
+            // Violations
+            if (results.violations.length > 0) {
+                html += `<div class="results violations">
+                    <h3>❌ Violations (${results.violations.length})</h3>`;
+                results.violations.forEach(violation => {
+                    html += `<div class="violation-item">
+                        <strong>${violation.rule}</strong>: ${violation.description}
+                        <br><small>Impact: ${violation.impact}</small>
+                        <br><small>Help: ${violation.help}</small>
+                        <br><small>Help URL: <a href="${violation.helpUrl}" target="_blank">${violation.helpUrl}</a></small>
+                    </div>`;
+                });
+                html += '</div>';
+            }
+            
+            // Passes
+            if (results.passes.length > 0) {
+                html += `<div class="results passes">
+                    <h3>✅ Passes (${results.passes.length})</h3>`;
+                results.passes.forEach(pass => {
+                    html += `<div class="pass-item">
+                        <strong>${pass.rule}</strong>: ${pass.description}
+                    </div>`;
+                });
+                html += '</div>';
+            }
+            
+            // Incomplete
+            if (results.incomplete.length > 0) {
+                html += `<div class="results incomplete">
+                    <h3>⚠️ Incomplete (${results.incomplete.length})</h3>
+                    <p>These checks couldn't be completed automatically and may need manual review.</p>`;
+                results.incomplete.forEach(incomplete => {
+                    html += `<div class="pass-item">
+                        <strong>${incomplete.rule}</strong>: ${incomplete.description}
+                    </div>`;
+                });
+                html += '</div>';
+            }
+            
+            // Summary
+            html += `<div class="results passes">
+                <h3>📊 Summary</h3>
+                <p>Total checks: ${results.passes.length + results.violations.length + results.incomplete.length}</p>
+                <p>Passed: ${results.passes.length}</p>
+                <p>Violations: ${results.violations.length}</p>
+                <p>Incomplete: ${results.incomplete.length}</p>
+            </div>`;
+            
+            resultsDiv.innerHTML = html;
+        }
+        
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+        
+        // Auto-run audit when page loads (optional)
+        // window.onload = runAudit;
+    </script>
+</body>
+</html>

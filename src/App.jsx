@@ -11,7 +11,7 @@ import { useGameBoard } from "./hooks/useGameBoard";
 import { rebuildStatuses } from "./utils/rebuildStatuses";
 
 function App() {
-  const { darkMode, handleToggle } = useDarkMode();
+  const [darkMode, handleToggle] = useDarkMode();
 
   const {
     currentWord,
@@ -194,6 +194,9 @@ function App() {
             onClick={() => guessWord(letter)}
             disabled={disabledLetters.includes(letter)}
             data-delay={letterIndex <= 10 ? letterIndex : ""}
+            aria-label={`Press letter ${letter}`}
+            aria-pressed={false}
+            type="button"
           >
             <span
               className={isRGBActive ? rainbowLetter : ""}
@@ -209,55 +212,81 @@ function App() {
 
   return !hasHydrated ? null : (
     <main className={`sm:pb-10 ${darkMode ? "dark-mode" : ""}`}>
-      <Header handleToggle={handleToggle} toastMessage={toastMessage} />
+      <Header
+        handleToggle={handleToggle}
+        toastMessage={toastMessage}
+        darkMode={darkMode}
+      />
 
       {/* Game status section */}
-      <section>
-        <h3
+      <section aria-label="Game Status">
+        <h2
           className={`text-center mb-16 ${getGameStatusClass(
             gameWon,
             gameLoss
           )}`}
+          aria-live="polite"
+          aria-atomic="true"
         >
           {getGameStatusMessage(gameWon, gameLoss)}
-        </h3>
+        </h2>
       </section>
 
       {/* Game board */}
-      {allGuesses.map((wordRow, index) => (
-        <section
-          className={`text-center sm:mt-2 ${
-            index === shakeRowIndex ? "shake" : ""
-          }`}
-          key={index}
-        >
-          {wordRow.map((letter, key) => (
-            <span
-              key={key}
-              className={getTileClass(
-                index,
-                key,
-                classNames,
-                darkMode,
-                revealingTiles,
-                bounceTiles
-              )}
-            >
-              {guessedWord[key] && index === emptyRowIndex
-                ? guessedWord[key]
-                : letter}
-            </span>
-          ))}
-        </section>
-      ))}
+      <div aria-label="Game Board" role="grid" aria-rowcount="6">
+        {allGuesses.map((wordRow, index) => (
+          <div
+            className={`text-center sm:mt-2 ${
+              index === shakeRowIndex ? "shake" : ""
+            }`}
+            key={index}
+            role="row"
+            aria-rowindex={index + 1}
+          >
+            {wordRow.map((letter, key) => (
+              <span
+                key={key}
+                className={getTileClass(
+                  index,
+                  key,
+                  classNames,
+                  darkMode,
+                  revealingTiles,
+                  bounceTiles
+                )}
+                role="gridcell"
+                aria-colindex={key + 1}
+                aria-label={`Position ${key + 1}, Row ${index + 1}: ${
+                  letter || "empty"
+                }`}
+              >
+                {guessedWord[key] && index === emptyRowIndex
+                  ? guessedWord[key]
+                  : letter}
+              </span>
+            ))}
+          </div>
+        ))}
+      </div>
 
       {/* Keyboard Section */}
-      <section className="text-center sm:mt-16 mt-10">
+      <section
+        className="text-center sm:mt-16 mt-10"
+        aria-label="Virtual Keyboard"
+        role="group"
+      >
         {keyboardElements}
       </section>
 
       <div className="text-center mt-5">
-        <button onClick={handleKeyboardToggle}>
+        <button
+          onClick={handleKeyboardToggle}
+          aria-label={`Toggle RGB keyboard effects ${
+            isRGBActive ? "off" : "on"
+          }`}
+          aria-pressed={isRGBActive}
+          type="button"
+        >
           RGB KEYBOARD: TURN {isRGBActive ? "OFF" : "ON"}
         </button>
       </div>

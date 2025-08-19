@@ -1,15 +1,20 @@
 import Nav from "./Nav";
 import React from "react";
 
-function Header({ handleToggle, toastMessage }) {
+function Header({ handleToggle, toastMessage, darkMode }) {
   return (
     <header>
       {/* Navigation Bar */}
-      <Nav handleToggle={handleToggle} />
+      <Nav handleToggle={handleToggle} darkMode={darkMode} />
 
       {/* Toast for words not in the list */}
       {toastMessage && (
-        <div className="fixed top-5 left-1/2 -translate-x-1/2 bg-indigo-500 text-white px-4 py-2 rounded-md shadow-lg transition-opacity duration-500">
+        <div
+          className="fixed top-5 left-1/2 -translate-x-1/2 bg-indigo-500 text-white px-4 py-2 rounded-md shadow-lg transition-opacity duration-500"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
           Not in word list!
         </div>
       )}
