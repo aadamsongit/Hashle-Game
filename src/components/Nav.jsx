@@ -1,3 +1,5 @@
+import React from "react";
+
 function Nav({ handleToggle, darkMode }) {
   return (
     <nav className="flex justify-end items-center p-2">
