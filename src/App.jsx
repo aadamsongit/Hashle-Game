@@ -187,22 +187,23 @@ function App() {
 
         const rainbowLetter = getRainbowLetterClass(letterIndex);
 
+        const gradientIndex =
+          letterIndex <= 7 ? letterIndex : letter === "P" ? 8 : letterIndex;
+
         return !hasHydrated ? null : (
           <button
             key={letterIndex}
             className={buttonClass}
             onClick={() => guessWord(letter)}
             disabled={disabledLetters.includes(letter)}
-            data-delay={letterIndex <= 8 ? letterIndex : ""}
+            data-delay={gradientIndex}
             aria-label={`Press letter ${letter}`}
             aria-pressed={false}
             type="button"
           >
             <span
               className={isRGBActive ? rainbowLetter : ""}
-              data-delay={
-                letterIndex === 9 ? "9" : letterIndex <= 7 ? letterIndex : ""
-              }
+              data-delay={gradientIndex}
             >
               {letter}
             </span>

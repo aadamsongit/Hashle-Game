@@ -1,4 +1,5 @@
-import { useState } from "react";
+// TODO: Remove `special-p` span and ensure isRGBActive applies gradient to "P" correctly
+// TODO: Add E2E test to check keyboard input and data-delay for all lettersimport { useState } from "react";
 
 export const useKeyboard = () => {
   const [isRGBActive, setRGBActive] = useState(false);
