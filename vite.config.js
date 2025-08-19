@@ -1,15 +1,8 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+// vitest.config.js
+import { defineConfig } from "vitest/config";
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  css: {
-    postcss: "./postcss.config.js", // Ensure PostCSS config is linked
-  },
   test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: ["./src/setupTests.js"],
+    setupFiles: "./vitest.setup.js",
   },
 });

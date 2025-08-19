@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { axe, toHaveNoViolations } from "jest-axe";
 import { describe, it, expect, beforeEach } from "vitest";
 import App from "./App";
+import { useState } from "react";
 
 // Extend Jest matchers for accessibility testing
 expect.extend(toHaveNoViolations);

@@ -1,5 +1,6 @@
 // TODO: Remove `special-p` span and ensure isRGBActive applies gradient to "P" correctly
 // TODO: Add E2E test to check keyboard input and data-delay for all lettersimport { useState } from "react";
+import { useState } from "react";
 
 export const useKeyboard = () => {
   const [isRGBActive, setRGBActive] = useState(false);
@@ -15,6 +16,7 @@ export const useKeyboard = () => {
   };
 
   const getGradientClass = (letterIndex) => {
+    // Apply rainbow gradient to indices 0–8
     if (letterIndex <= 8) {
       return "rainbow-bg";
     }
@@ -22,12 +24,9 @@ export const useKeyboard = () => {
   };
 
   const getRainbowLetterClass = (letterIndex) => {
-    if (letterIndex <= 7) {
+    // Apply rainbow text to indices 0–8
+    if (letterIndex <= 8) {
       return "rainbow-text";
-    }
-    // Special styling for letter P (index 9) to make it stand out like Delete button
-    if (letterIndex === 9) {
-      return "special-p";
     }
     return "";
   };
