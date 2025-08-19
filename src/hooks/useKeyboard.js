@@ -24,6 +24,10 @@ export const useKeyboard = () => {
     if (letterIndex <= 7) {
       return "rainbow-text";
     }
+    // Special styling for letter P (index 9) to make it stand out like Delete button
+    if (letterIndex === 9) {
+      return "special-p";
+    }
     return "";
   };
 

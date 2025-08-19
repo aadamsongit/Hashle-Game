@@ -200,7 +200,9 @@ function App() {
           >
             <span
               className={isRGBActive ? rainbowLetter : ""}
-              data-delay={letterIndex <= 7 ? letterIndex : ""}
+              data-delay={
+                letterIndex === 9 ? "9" : letterIndex <= 7 ? letterIndex : ""
+              }
             >
               {letter}
             </span>
