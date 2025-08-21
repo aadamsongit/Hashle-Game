@@ -16,16 +16,16 @@ export const useKeyboard = () => {
   };
 
   const getGradientClass = (letterIndex) => {
-    // Apply rainbow gradient to indices 0–8
-    if (letterIndex <= 8) {
+    // Apply rainbow gradient to indices 0–9
+    if (letterIndex <= 9) {
       return "rainbow-bg";
     }
     return "";
   };
 
   const getRainbowLetterClass = (letterIndex) => {
-    // Apply rainbow text to indices 0–8
-    if (letterIndex <= 8) {
+    // Apply rainbow text to indices 0–9
+    if (letterIndex <= 9) {
       return "rainbow-text";
     }
     return "";
