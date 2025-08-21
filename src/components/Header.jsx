@@ -21,8 +21,8 @@ function Header({ handleToggle, toastMessage, darkMode }) {
 
       {/* Title For Application*/}
       <div className="flex justify-center mt-16 sm:mb-12">
-        <div className="w-full sm:max-w-[660px]">
-          <h1 className="sm:text-3xl font-bold text-lg pl-[50px] sm:pl-0">
+        <div className="w-full sm:max-w-[660px] md:max-w-[800px] md:px-4">
+          <h1 className="sm:text-3xl font-bold text-lg pl-[50px] sm:pl-0 md:pl-0">
             <span className="terminal-title">
               🚀Hashle: An Evolving Word Game
             </span>
