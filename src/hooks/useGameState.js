@@ -3,6 +3,8 @@ import { getDailyWord } from "../utils/getRandomWord";
 import { getDayIndex, saveToLocalStorage } from "../utils/gameHelpers";
 import { rebuildStatuses } from "../utils/rebuildStatuses";
 
+const maxRows = 6;
+
 export const useGameState = (data) => {
   const [currentWord, setCurrentWord] = useState("PLACE");
   const [guessedWord, setGuessedWord] = useState([]);
@@ -17,7 +19,9 @@ export const useGameState = (data) => {
     } catch (e) {
       console.warn("Failed to load saved boardState", e);
     }
-    return [];
+    return Array.from({ length: maxRows }, () =>
+      Array(currentWord.length).fill("")
+    );
   });
 
   const [currentRowIndex, setCurrentRowIndex] = useState(0);
@@ -47,11 +51,12 @@ export const useGameState = (data) => {
     });
 
     if (todayData?.boardState) {
-      const lastFilledIndex = todayData.boardState.findIndex((row) =>
-        row.every((cell) => cell === "")
+      // Find the first row that is not fully filled
+      const nextRowIndex = todayData.boardState.findIndex((row) =>
+        row.some((cell) => cell === "")
       );
       setCurrentRowIndex(
-        lastFilledIndex === -1 ? todayData.boardState.length : lastFilledIndex
+        nextRowIndex === -1 ? todayData.boardState.length : nextRowIndex
       );
 
       if (todayData.outcome === "win") {
@@ -73,19 +78,19 @@ export const useGameState = (data) => {
   }, [allGuesses, hasHydrated, gameWon, gameLoss]);
 
   // Create missing rows based on word length
-  useEffect(() => {
-    if (gameWon || gameLoss) return;
+  // useEffect(() => {
+  //   if (gameWon || gameLoss) return;
 
-    const desiredRows = currentWord.length + 1;
-    const currentRows = allGuesses.length;
+  //   const desiredRows = currentWord.length + 1;
+  //   const currentRows = allGuesses.length;
 
-    if (currentRows < desiredRows) {
-      const missingRows = Array(desiredRows - currentRows).fill(
-        Array(currentWord.length).fill("")
-      );
-      setAllGuesses([...allGuesses, ...missingRows]);
-    }
-  }, [currentWord.length, allGuesses, gameWon, gameLoss]);
+  //   if (currentRows < desiredRows) {
+  //     const missingRows = Array(desiredRows - currentRows).fill(
+  //       Array(currentWord.length).fill("")
+  //     );
+  //     setAllGuesses([...allGuesses, ...missingRows]);
+  //   }
+  // }, [currentWord.length, allGuesses, gameWon, gameLoss]);
 
   // Check for loss condition
   useEffect(() => {
@@ -95,7 +100,24 @@ export const useGameState = (data) => {
   }, [currentRowIndex]);
 
   const resetGuessedWord = () => setGuessedWord([]);
-  const addGuess = (guess) => setAllGuesses(prev => [...prev, guess]);
+  const addGuess = () => {
+    console.log("BEFORE addGuess:", { currentRowIndex, guessedWord });
+
+    setAllGuesses((prev) => {
+      const newGuesses = [...prev];
+      console.log("Updating row:", currentRowIndex, "with", guessedWord);
+      newGuesses[currentRowIndex] = [...guessedWord];
+      return newGuesses;
+    });
+
+    setCurrentRowIndex((prev) => {
+      console.log("INCREMENTING currentRowIndex:", prev, "->", prev + 1);
+      return prev + 1;
+    });
+
+    setGuessedWord([]);
+  };
+
   const updateCurrentRow = (newIndex) => setCurrentRowIndex(newIndex);
 
   return {
@@ -113,6 +135,6 @@ export const useGameState = (data) => {
     resetGuessedWord,
     addGuess,
     updateCurrentRow,
-    rebuildStatuses: (boardState, word) => rebuildStatuses(boardState, word)
+    rebuildStatuses: (boardState, word) => rebuildStatuses(boardState, word),
   };
 };

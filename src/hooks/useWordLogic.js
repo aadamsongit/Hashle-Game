@@ -14,7 +14,19 @@ export const useWordLogic = (data, currentWord, hasHydrated) => {
 
   const currentWordArray = currentWord.split("");
 
-  const validateAndProcessGuess = (guessedWord, currentRowIndex, allGuesses, setAllGuesses, setCurrentRowIndex, setGuessedWord, triggerShakeEffect, showToast, handleGuessReveal, addStatusesandClasses, triggerWin) => {
+  const validateAndProcessGuess = (
+    guessedWord,
+    currentRowIndex,
+    allGuesses,
+    setAllGuesses,
+    setCurrentRowIndex,
+    setGuessedWord,
+    triggerShakeEffect,
+    showToast,
+    handleGuessReveal,
+    addStatusesandClasses,
+    triggerWin
+  ) => {
     const guessedWordStr = guessedWord.join("");
 
     if (!isValidWordLength(guessedWordStr, currentWord)) {
@@ -26,7 +38,16 @@ export const useWordLogic = (data, currentWord, hasHydrated) => {
       triggerWin();
       return true;
     } else if (isValidWord(guessedWordStr, data)) {
-      addtoGuessandReset(guessedWord, currentRowIndex, allGuesses, setAllGuesses, setCurrentRowIndex, setGuessedWord, handleGuessReveal, addStatusesandClasses);
+      addtoGuessandReset(
+        guessedWord,
+        currentRowIndex,
+        allGuesses,
+        setAllGuesses,
+        setCurrentRowIndex,
+        setGuessedWord,
+        handleGuessReveal,
+        addStatusesandClasses
+      );
       return true;
     } else {
       showToast();
@@ -35,16 +56,37 @@ export const useWordLogic = (data, currentWord, hasHydrated) => {
     }
   };
 
-  const addtoGuessandReset = (guessedWord, currentRowIndex, allGuesses, setAllGuesses, setCurrentRowIndex, setGuessedWord, handleGuessReveal, addStatusesandClasses) => {
+  const addtoGuessandReset = (
+    guessedWord,
+    currentRowIndex,
+    allGuesses,
+    setAllGuesses,
+    setCurrentRowIndex,
+    setGuessedWord,
+    handleGuessReveal,
+    addStatusesandClasses
+  ) => {
     const dayIndex = getDayIndex();
-    
+
+    // Log state before guess
+    console.log("Before guess:", {
+      guessedWord,
+      currentRowIndex,
+      allGuesses,
+    });
+
     setAllGuesses((prevGuesses) => {
       if (!hasHydrated) return prevGuesses;
-      let newGuesses = [...prevGuesses];
-      const copyOfGuessedWord = [...guessedWord];
-      newGuesses[currentRowIndex] = copyOfGuessedWord;
-
+      const newGuesses = [...prevGuesses];
+      // Use functional update for row index
+      newGuesses[currentRowIndex] = [...guessedWord];
       saveToLocalStorage(newGuesses, "in_progress", dayIndex);
+      // Log state after guess
+      console.log("After guess:", {
+        guessedWord,
+        currentRowIndex,
+        newGuesses,
+      });
       return newGuesses;
     });
 
@@ -145,7 +187,17 @@ export const useWordLogic = (data, currentWord, hasHydrated) => {
     setDisabledLetters((prev) => [...prev, letter]);
   };
 
-  const handleWin = (guessedWord, currentRowIndex, allGuesses, setAllGuesses, setGuessedWord, setGameWon, handleGuessReveal, addStatusesandClasses, bounceWinRow) => {
+  const handleWin = (
+    guessedWord,
+    currentRowIndex,
+    allGuesses,
+    setAllGuesses,
+    setGuessedWord,
+    setGameWon,
+    handleGuessReveal,
+    addStatusesandClasses,
+    bounceWinRow
+  ) => {
     handleGuessReveal();
 
     setTimeout(() => {
@@ -168,7 +220,14 @@ export const useWordLogic = (data, currentWord, hasHydrated) => {
     setGuessedWord([]);
   };
 
-  const handleLoss = (guessedWord, currentRowIndex, allGuesses, setAllGuesses, setGuessedWord, setGameLoss) => {
+  const handleLoss = (
+    guessedWord,
+    currentRowIndex,
+    allGuesses,
+    setAllGuesses,
+    setGuessedWord,
+    setGameLoss
+  ) => {
     addStatusesandClasses(guessedWord, currentRowIndex);
     setGameLoss(true);
 
@@ -198,6 +257,6 @@ export const useWordLogic = (data, currentWord, hasHydrated) => {
     addStatusesandClasses,
     updateDisabledLetters,
     handleWin,
-    handleLoss
+    handleLoss,
   };
 };

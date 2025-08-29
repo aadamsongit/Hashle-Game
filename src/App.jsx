@@ -90,7 +90,7 @@ function App() {
   };
 
   const handleEnter = () => {
-    const success = validateAndProcessGuess(
+    validateAndProcessGuess(
       guessedWord,
       currentRowIndex,
       allGuesses,
@@ -103,19 +103,6 @@ function App() {
       () => addStatusesandClasses(guessedWord, currentRowIndex),
       () => triggerWin()
     );
-
-    if (success) {
-      addtoGuessandReset(
-        guessedWord,
-        currentRowIndex,
-        allGuesses,
-        setAllGuesses,
-        updateCurrentRow,
-        setGuessedWord,
-        () => handleGuessReveal(guessedWord, currentRowIndex),
-        () => addStatusesandClasses(guessedWord, currentRowIndex)
-      );
-    }
   };
 
   const triggerWin = () => {
@@ -264,9 +251,7 @@ function App() {
                   letter || "empty"
                 }`}
               >
-                {guessedWord[key] && index === emptyRowIndex
-                  ? guessedWord[key]
-                  : letter}
+                {index === currentRowIndex ? guessedWord[key] || "" : letter}
               </span>
             ))}
           </div>
