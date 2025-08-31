@@ -10,6 +10,7 @@ import { useKeyboard } from "./hooks/useKeyboard.jsx";
 import { useAnimations } from "./hooks/useAnimations";
 import { useGameBoard } from "./hooks/useGameBoard";
 import { rebuildStatuses } from "./utils/rebuildStatuses";
+import { isCorrectWord } from "./utils/wordHelpers.js";
 
 function App() {
   const [darkMode, handleToggle] = useDarkMode();
@@ -100,8 +101,8 @@ function App() {
       () => triggerShakeEffect(findEmptyRowIndex(allGuesses)),
       showToast,
       () => handleGuessReveal(guessedWord, currentRowIndex),
-      () => addStatusesandClasses(guessedWord, currentRowIndex),
-      () => triggerWin()
+      addStatusesandClasses,
+      triggerWin
     );
   };
 
@@ -157,7 +158,7 @@ function App() {
       setClassNames(newClassNames);
       setKeyStatuses(newKeyStatuses);
     }
-  }, [hasHydrated, allGuesses, currentWord, setClassNames, setKeyStatuses]);
+  }, [hasHydrated, currentWord, setClassNames, setKeyStatuses]);
 
   const emptyRowIndex = findEmptyRowIndex(allGuesses);
 
