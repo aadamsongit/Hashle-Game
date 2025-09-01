@@ -68,13 +68,6 @@ export const useWordLogic = (data, currentWord, hasHydrated) => {
   ) => {
     const dayIndex = getDayIndex();
 
-    // Log state before guess
-    console.log("Before guess:", {
-      guessedWord,
-      currentRowIndex,
-      allGuesses,
-    });
-
     setAllGuesses((prevGuesses) => {
       if (!hasHydrated) return prevGuesses;
       const newGuesses = [...prevGuesses];
@@ -82,11 +75,7 @@ export const useWordLogic = (data, currentWord, hasHydrated) => {
       newGuesses[currentRowIndex] = [...guessedWord];
       saveToLocalStorage(newGuesses, "in_progress", dayIndex);
       // Log state after guess
-      console.log("After guess:", {
-        guessedWord,
-        currentRowIndex,
-        newGuesses,
-      });
+
       return newGuesses;
     });
 
@@ -102,11 +91,6 @@ export const useWordLogic = (data, currentWord, hasHydrated) => {
 
   const addStatusesandClasses = (guessedWord, currentRowIndex) => {
     const vowels = currentWord.match(/[AEIOUY]/g) || [];
-    console.log(
-      `Current word: "${currentWord}", Vowels found: [${vowels.join(
-        ", "
-      )}], Word length: ${currentWord.length}`
-    );
 
     let newStatuses = Array(guessedWord.length).fill("");
     let letterCount = {};
@@ -138,10 +122,7 @@ export const useWordLogic = (data, currentWord, hasHydrated) => {
 
     // Update tile colors with animation
     for (let i = 0; i < guessedWord.length; i++) {
-      console.log("before timeout", i, "guessedWord[i]=", guessedWord[i]);
-
       setTimeout(() => {
-        console.log("inside timeout", i, "guessedWord[i]=", guessedWord[i]);
         setClassNames((prevClassNames) => {
           let newClassNames = [...prevClassNames];
           let updatedStatuses = [...newStatuses];

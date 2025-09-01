@@ -108,11 +108,6 @@ function App() {
 
   const triggerWin = () => {
     handleGuessReveal(guessedWord, currentRowIndex);
-    console.log("At triggerWin start:", {
-      currentRowIndex,
-      allGuesses,
-      guessedWord,
-    });
 
     setTimeout(() => {
       addStatusesandClasses(guessedWord, currentRowIndex);
