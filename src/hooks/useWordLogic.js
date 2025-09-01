@@ -138,7 +138,10 @@ export const useWordLogic = (data, currentWord, hasHydrated) => {
 
     // Update tile colors with animation
     for (let i = 0; i < guessedWord.length; i++) {
+      console.log("before timeout", i, "guessedWord[i]=", guessedWord[i]);
+
       setTimeout(() => {
+        console.log("inside timeout", i, "guessedWord[i]=", guessedWord[i]);
         setClassNames((prevClassNames) => {
           let newClassNames = [...prevClassNames];
           let updatedStatuses = [...newStatuses];
@@ -209,15 +212,19 @@ export const useWordLogic = (data, currentWord, hasHydrated) => {
 
     setGameWon(true);
 
-    const updatedGuesses = [...allGuesses];
-    updatedGuesses[currentRowIndex] = [...guessedWord];
+    // const updatedGuesses = [...allGuesses];
+    // updatedGuesses[currentRowIndex] = [...guessedWord];
 
-    if (!hasHydrated) return;
+    setAllGuesses((prev) => {
+      const updated = prev.map((row) => [...row]); // copy board safely
+      updated[currentRowIndex] = [...guessedWord]; // write winning word
 
-    const dayIndex = getDayIndex();
-    saveToLocalStorage(updatedGuesses, "win", dayIndex);
-    setAllGuesses(updatedGuesses);
-    setGuessedWord([]);
+      if (hasHydrated) {
+        saveToLocalStorage(updated, "win", getDayIndex()); // persist right here
+      }
+
+      return updated;
+    });
   };
 
   const handleLoss = (

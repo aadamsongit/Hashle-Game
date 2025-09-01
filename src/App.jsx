@@ -108,9 +108,15 @@ function App() {
 
   const triggerWin = () => {
     handleGuessReveal(guessedWord, currentRowIndex);
+    console.log("At triggerWin start:", {
+      currentRowIndex,
+      allGuesses,
+      guessedWord,
+    });
 
     setTimeout(() => {
       addStatusesandClasses(guessedWord, currentRowIndex);
+
       setTimeout(() => {
         bounceWinRow(currentWordArray, currentRowIndex);
       }, 1200);
@@ -123,9 +129,7 @@ function App() {
       setAllGuesses,
       setGuessedWord,
       setGameWon,
-      () => handleGuessReveal(guessedWord, currentRowIndex),
-      () => addStatusesandClasses(guessedWord, currentRowIndex),
-      () => bounceWinRow(currentWordArray, currentRowIndex)
+      () => handleGuessReveal(guessedWord, currentRowIndex)
     );
   };
 

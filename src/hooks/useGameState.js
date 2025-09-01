@@ -32,11 +32,6 @@ export const useGameState = (data) => {
   // Initialize game state
   useEffect(() => {
     const newWord = getDailyWord(data).toUpperCase();
-    console.log(
-      `Setting daily word: "${newWord}", Vowels: [${
-        newWord.match(/[AEIOUY]/g)?.join(", ") || "NONE"
-      }], Length: ${newWord.length}`
-    );
     setCurrentWord(newWord);
 
     const dayIndex = getDayIndex();
@@ -77,21 +72,6 @@ export const useGameState = (data) => {
     saveToLocalStorage(allGuesses, status, getDayIndex());
   }, [allGuesses, hasHydrated, gameWon, gameLoss]);
 
-  // Create missing rows based on word length
-  // useEffect(() => {
-  //   if (gameWon || gameLoss) return;
-
-  //   const desiredRows = currentWord.length + 1;
-  //   const currentRows = allGuesses.length;
-
-  //   if (currentRows < desiredRows) {
-  //     const missingRows = Array(desiredRows - currentRows).fill(
-  //       Array(currentWord.length).fill("")
-  //     );
-  //     setAllGuesses([...allGuesses, ...missingRows]);
-  //   }
-  // }, [currentWord.length, allGuesses, gameWon, gameLoss]);
-
   // Check for loss condition
   useEffect(() => {
     if (currentRowIndex === 6) {
@@ -101,17 +81,13 @@ export const useGameState = (data) => {
 
   const resetGuessedWord = () => setGuessedWord([]);
   const addGuess = () => {
-    console.log("BEFORE addGuess:", { currentRowIndex, guessedWord });
-
     setAllGuesses((prev) => {
       const newGuesses = [...prev];
-      console.log("Updating row:", currentRowIndex, "with", guessedWord);
       newGuesses[currentRowIndex] = [...guessedWord];
       return newGuesses;
     });
 
     setCurrentRowIndex((prev) => {
-      console.log("INCREMENTING currentRowIndex:", prev, "->", prev + 1);
       return prev + 1;
     });
 
