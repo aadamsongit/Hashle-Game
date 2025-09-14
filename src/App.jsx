@@ -13,6 +13,22 @@ import { rebuildStatuses } from "./utils/rebuildStatuses";
 import { isCorrectWord } from "./utils/wordHelpers.js";
 
 function App() {
+   useEffect(() => {
+     function isSafari() {
+       const isWebKit = !!window.webkitURL;
+       const isChrome = !!window.chrome;
+       const isFirefox = typeof InstallTrigger !== "undefined";
+       return isWebKit && !isChrome && !isFirefox;
+     }
+
+     if (isSafari()) {
+       document.body.classList.add("safari-fix");
+       console.log("Safari detected!");
+     } else {
+       console.log("Not Safari");
+     }
+   }, []); 
+   
   const [darkMode, handleToggle] = useDarkMode();
 
   const {
