@@ -158,7 +158,7 @@ button:focus-visible {
 
 /* Problematic Safari/iPad breakpoint only */
 @media (min-width: 768px) and (max-width: 1920px) {
-  body.safari-fix .terminal-container {
+  body.mac-fix .terminal-container {
     max-width: 720px;
   }
 }
