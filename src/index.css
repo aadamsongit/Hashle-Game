@@ -150,6 +150,13 @@ button:focus-visible {
   }
 }
 
+@media (min-width: 768px) and (max-width: 1024px) {
+  .terminal-container {
+    max-width: 700px;
+    /* add ~10px buffer */
+  }
+}
+
 @keyframes typing {
   from { 
     width: 0; /* Start with no visible text */
