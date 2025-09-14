@@ -7,6 +7,9 @@ export default {
       screens: {
         ipad: { min: "768px", max: "1024px" },
       },
+      maxWidth: {
+        "ipad-buffer": "700px",
+      },
     },
   },
   plugins: [],
