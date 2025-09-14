@@ -157,10 +157,12 @@ button:focus-visible {
 }
 
 /* Problematic Safari/iPad breakpoint only */
-@media (min-width: 768px) and (max-width: 1920px) {
-  .terminal-container {
-    max-width: 720px;
-    /* bump it only for these widths */
+@media not all and (min-resolution: 0.001dpcm) {
+  @media (min-width: 768px) and (max-width: 1920px) {
+    .terminal-container {
+      max-width: 720px;
+      /* Safari-only */
+    }
   }
 }
 
