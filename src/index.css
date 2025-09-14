@@ -120,6 +120,14 @@ button:focus-visible {
     blink-caret 0.5s step-end infinite;  /* Blinking cursor effect */
 }
 
+/* Safari-specific fix */
+@supports (-webkit-touch-callout: none) {
+  .terminal-title {
+    animation: typing 3.5s steps(32, end) forwards,
+      blink-caret 0.5s step-end infinite;
+  }
+}
+
 @media (max-width: 670px) {
   .terminal-title {
     max-width: 500px;
