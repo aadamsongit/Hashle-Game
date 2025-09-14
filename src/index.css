@@ -156,18 +156,18 @@ button:focus-visible {
   /* default, works on most screens */
 }
 
-@media (min-width: 768px) and (max-width: 1024px) {
+@media (min-width: 768px) and (max-width: 1440px) {
   .terminal-container {
-    max-width: 700px;
+    max-width: 720px;
     /* add ~10px buffer */
   }
 }
 
-@media (min-width: 768px) and (max-width: 1024px) {
+/* @media (min-width: 768px) and (max-width: 1024px) {
   .terminal-title-parent h1 {
     max-width: 700px;
   }
-}
+} */
 
 @keyframes typing {
   from { 
