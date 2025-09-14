@@ -21,7 +21,7 @@ function Header({ handleToggle, toastMessage, darkMode }) {
 
       {/* Title For Application*/}
       <div className="flex justify-center mt-16 sm:mb-12">
-        <div className="w-full sm:max-w-[690px] md:px-4 terminal-container [@media_(min-width:768px)_and_(max-width:1024px)]:max-w-[700px]">
+        <div className="w-full md:max-w-[690px] md:px-4 ipad:max-w-[700px]">
           <h1 className="sm:text-3xl font-bold text-lg pl-[50px] sm:pl-0 md:pl-0 terminal-title-parent">
             <span className="terminal-title ipad:w-[23ch]">
               🚀Hashle: An Evolving Word Game
