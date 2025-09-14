@@ -156,13 +156,11 @@ button:focus-visible {
   /* default, works on most screens */
 }
 
-/* Safari-specific fix */
-@supports (-webkit-touch-callout: none) {
-  @media (min-width: 768px) and (max-width: 1920px) {
-    .terminal-container {
-      max-width: 720px;
-      /* only for Safari on problematic screens */
-    }
+/* Problematic Safari/iPad breakpoint only */
+@media (min-width: 768px) and (max-width: 1920px) {
+  .terminal-container {
+    max-width: 720px;
+    /* bump it only for these widths */
   }
 }
 
