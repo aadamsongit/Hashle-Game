@@ -150,6 +150,12 @@ button:focus-visible {
   }
 }
 
+/* Keep Tailwind default for most screens */
+.terminal-container {
+  max-width: 690px;
+  /* default, works on most screens */
+}
+
 @media (min-width: 768px) and (max-width: 1024px) {
   .terminal-container {
     max-width: 700px;
