@@ -159,8 +159,7 @@ button:focus-visible {
 
 @media (min-width: 768px) and (max-width: 1024px) {
   .terminal-title-parent h1 {
-    width: 100%;
-    max-width: none;
+    max-width: 700px;
   }
 }
 
