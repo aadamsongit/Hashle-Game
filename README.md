@@ -15,10 +15,11 @@ I set up Vitest, axe-core for accessibility testing, and Playwright for end-to-e
 - Review and validate the existing Vitest, Playwright, and axe-core test suites.
 - Expand regression and end-to-end test coverage around gameplay and state transitions.
 - Continue validating responsive behavior across browsers and devices, with particular attention to Android.
-- Consider a small backend. Maybe a simple auth with a basic login and Oath.
-- Add an auth layer with data handling beyond localStorage. localStorage for users not logged in. Authenticated users get better data handling. 
+- Consider a small backend. Maybe a simple auth with a basic login and oath. Prefer Google or some simple login flow. 
+- Introduce an authentication layer with persistent user data. Anonymous users can continue using localStorage, while authenticated users store progress, streaks, and achievements in a database.
 - Weigh trade-off in BaaS for data vs. maybe simple Express.js setup with perhaps light SQL or NoSQL or Postgres.
 
  ## ⚙️ Tradeoffs
-- BaaS is super fast and a clean abstract for a quick backend+data handling.
+- BaaS is super fast and a clean abstract for a quick backend+data handling. Supabase has a generous free tier, but there are some tradeoffs. You have to set up like a CRON job to keep the db running. Postgres feels cleaner for data even in relatively small apps, though requires a bit more handling+flow setup. Supabase trades a bit of UX and DevEx for speed. The RLS is nice but seems to require some setup.
+- Express.js is a lightweight React backend, but documentation focuses on CommonJS, which isn't really best focus. 
 
