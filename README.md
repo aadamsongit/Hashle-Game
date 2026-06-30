@@ -25,5 +25,6 @@ Supabase reduces the amount of backend infrastructure you need to build, making 
 Supabase also provides built-in authentication and Row-Level Security (RLS), although those policies still need to be configured. They are not simply enabled by default for every use case.
 
 Building the backend with PostgreSQL, Prisma, and TypeScript requires more setup but provides greater control over the data model and application architecture. Prisma's schema-first approach and generated TypeScript client encourage explicit modeling and type-safe database access, making it a good fit for strengthening backend fundamentals.
-   
+
+xpress.js pairs nicely with React as a lightweight backend. One consideration is that many tutorials and examples in the Express ecosystem still use CommonJS, whereas much of the modern frontend ecosystem has moved toward ES Modules and TypeScript-first tooling.
 
