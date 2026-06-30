@@ -36,5 +36,5 @@ You have several broad approaches.
 
 ExpressJS suits ReactJS. This is vanilla React with Vite. Express is lightweight. But the documentation prefers CommonJS syntax. See above on this. 
 
-Server actions (Next approach) is more modern and will be used by more modern data-driven applications. There's value to knowing App Router folder structure, NextAuth and its handling of JWTs and prop abstractions for auth, but Next might be excessive for a smaller application. 
+Server actions (Next approach) is more modern and will be used by more modern data-driven applications. There's value to knowing App Router folder structure, NextAuth and its handling of JWTs and prop abstractions for auth, but Next might be excessive for a smaller application. Next.js has a lot of modern stack value. It's just that it might introduce a heavier architecture for an application of this size. 
 
