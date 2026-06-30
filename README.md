@@ -19,22 +19,21 @@ I set up Vitest, axe-core for accessibility testing, and Playwright for end-to-e
 - Introduce an authentication layer with persistent user data. Anonymous users can continue using localStorage, while authenticated users store progress, streaks, and achievements in a database.
 - Weigh trade-off in BaaS for data vs. maybe simple Express.js setup with perhaps light SQL or NoSQL or Postgres.
 
- ## ⚙️ Tradeoffs
-Supabase reduces the amount of backend infrastructure you need to build, making it an attractive option for prototypes and small applications. In exchange, you accept platform-specific abstractions and operational behavior. For example, projects on the free tier can become inactive after periods of inactivity, which may require additional handling for demos or open source projects.
+ ## ⚙️ Architectural Tradeoffs
 
-Supabase also provides built-in authentication and Row-Level Security (RLS), although those policies still need to be configured. They are not simply enabled by default for every use case.
+Backend-as-a-Service
+
+Supabase reduces the amount of backend infrastructure you need to build, making it an attractive option for prototypes and small applications. In exchange, you accept platform-specific abstractions and operational behavior. For example, projects on the free tier can become inactive after periods of inactivity, which may require additional handling for demos or open source projects. Supabase also provides built-in authentication and Row-Level Security (RLS), although those policies still need to be configured rather than being automatically enabled for every use case.
+
+Custom Backend
 
 Building the backend with PostgreSQL, Prisma, and TypeScript requires more setup but provides greater control over the data model and application architecture. Prisma's schema-first approach and generated TypeScript client encourage explicit modeling and type-safe database access, making it a good fit for strengthening backend fundamentals.
 
-ExpressJS pairs nicely with React as a lightweight backend. One consideration is that many tutorials and examples in the Express ecosystem still use CommonJS, whereas much of the modern frontend ecosystem has moved toward ES Modules and TypeScript-first tooling.
+Express.js pairs naturally with a React + Vite application as a lightweight backend. One consideration is that much of the Express ecosystem still uses CommonJS examples, whereas I've become accustomed to ES Modules and TypeScript-first workflows.
 
-The application could also be refactored to Next.js, but this might introduce some different patterns. Hashle was built with React and Vite. Express is a natural backend. Next however introduces modern auth best practices when paired with Prisma, TypeScript, Docker, and Postgres.
+Would I migrate to Next.js?
 
- ## ⚙️ Teal Deer
+Hashle could certainly be migrated to Next.js, but I don't think it's an automatic improvement. The application was designed around React and Vite, and Express is a natural companion for that architecture.
 
-You have several broad approaches.
-
-ExpressJS suits ReactJS. This is vanilla React with Vite. Express is lightweight. But the documentation prefers CommonJS syntax. See above on this. 
-
-Server actions (Next approach) is more modern and will be used by more modern data-driven applications. There's value to knowing App Router folder structure, NextAuth and its handling of JWTs and prop abstractions for auth, but Next might be excessive for a smaller application. Next.js has a lot of modern stack value. It's just that it might introduce a heavier architecture for an application of this size. 
+Next.js becomes more compelling if the application grows to include authenticated users, server-rendered data, or more sophisticated persistence. Its App Router, Server Actions, authentication ecosystem, and TypeScript-first workflow provide strong patterns for data-driven applications, but they also introduce additional architectural complexity that may not be necessary for a relatively small game.
 
