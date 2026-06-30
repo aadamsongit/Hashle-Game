@@ -35,5 +35,11 @@ Would I migrate to Next.js?
 
 Hashle could certainly be migrated to Next.js, but I don't think it's an automatic improvement. The application was designed around React and Vite, and Express is a natural companion for that architecture.
 
-Next.js becomes more compelling if the application grows to include authenticated users, server-rendered data, or more sophisticated persistence. Its App Router, Server Actions, authentication ecosystem, and TypeScript-first workflow provide strong patterns for data-driven applications, but they also introduce additional architectural complexity that may not be necessary for a relatively small game.
+ ## ⚙️ Recommended Approach
+
+Prefer figuring out testing layer over backend/data for now. The codebase has been refactored for modularity. It has been tested at the UI layer. 
+
+Next.js becomes more compelling if the application grows to include authenticated users, server-rendered data, or more sophisticated persistence. Its App Router, Server Actions, authentication ecosystem, and TypeScript-first workflow provide strong patterns for data-driven applications, but they also introduce additional architectural complexity that may not be necessary for a relatively small game. 
+
+Post-deployment, some behavioral bugs were reported. Use E2E to reproduce potential bugs in conjunction with unit tests. Validate unit/E2E suite. Also validate accessibility. Prefer deeper analysis, as the app is a smaller React application. 
 
