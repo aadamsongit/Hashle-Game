@@ -21,5 +21,9 @@ I set up Vitest, axe-core for accessibility testing, and Playwright for end-to-e
 
  ## ⚙️ Tradeoffs
 Supabase reduces the amount of backend infrastructure you need to build, making it an attractive option for prototypes and small applications. In exchange, you accept platform-specific abstractions and operational behavior. For example, projects on the free tier can become inactive after periods of inactivity, which may require additional handling for demos or open source projects.
+
+Supabase also provides built-in authentication and Row-Level Security (RLS), although those policies still need to be configured. They are not simply enabled by default for every use case.
+
+Building the backend with PostgreSQL, Prisma, and TypeScript requires more setup but provides greater control over the data model and application architecture. Prisma's schema-first approach and generated TypeScript client encourage explicit modeling and type-safe database access, making it a good fit for strengthening backend fundamentals.
    
 
