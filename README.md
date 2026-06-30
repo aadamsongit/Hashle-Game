@@ -29,4 +29,11 @@ Building the backend with PostgreSQL, Prisma, and TypeScript requires more setup
 ExpressJS pairs nicely with React as a lightweight backend. One consideration is that many tutorials and examples in the Express ecosystem still use CommonJS, whereas much of the modern frontend ecosystem has moved toward ES Modules and TypeScript-first tooling.
 
 The application could also be refactored to Next.js, but this might introduce some different patterns. Hashle was built with React and Vite. Express is a natural backend. Next however introduces modern auth best practices when paired with Prisma, TypeScript, Docker, and Postgres. 
+ ## ⚙️ Teal Deer
+
+You have several broad approaches.
+
+ExpressJS suits ReactJS. This is vanilla React with Vite. Express is lightweight. But the documentation prefers CommonJS syntax. See above on this. 
+
+Server actions (Next approach) is more modern and will be used by more modern data-driven applications. 
 
