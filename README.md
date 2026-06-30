@@ -35,11 +35,21 @@ Would I migrate to Next.js?
 
 Hashle could certainly be migrated to Next.js, but I don't think it's an automatic improvement. The application was designed around React and Vite, and Express is a natural companion for that architecture.
 
- ## ⚙️ Recommended Approach
+## ⚙️ Recommended Approach
 
-Prefer figuring out testing layer over backend/data for now. The codebase has been refactored for modularity. It has been tested at the UI layer. 
+Prioritize the testing layer before adding backend/data features. The codebase has already been refactored toward modularity, making it a better candidate for unit, E2E, and accessibility testing.
 
-Next.js becomes more compelling if the application grows to include authenticated users, server-rendered data, or more sophisticated persistence. Its App Router, Server Actions, authentication ecosystem, and TypeScript-first workflow provide strong patterns for data-driven applications, but they also introduce additional architectural complexity that may not be necessary for a relatively small game. 
+Next.js becomes more compelling if Hashle grows to include authenticated users, server-rendered data, or more sophisticated persistence. Its App Router, Server Actions, authentication ecosystem, and TypeScript-first workflow provide strong patterns for data-driven applications, but they may introduce unnecessary complexity for a relatively small game.
 
-Post-deployment, some behavioral bugs were reported. Use E2E to reproduce potential bugs in conjunction with unit tests. Validate unit/E2E suite. Also validate accessibility. Prefer deeper analysis, as the app is a smaller React application. 
+Post-deployment, some behavioral bugs were reported. The next step is to reproduce and guard against those bugs with a combination of unit tests and E2E tests. Accessibility should also be validated with axe-core.
+
+## ⚙️ Suggested Testing Methodology
+
+- Validate the existing Vitest, Playwright, and axe-core setup.
+- Run the current unit test suite and confirm which tests are meaningful.
+- Add unit tests for pure gameplay logic and state transition helpers.
+- Add regression tests for previously reported behavioral bugs.
+- Use Playwright to test core user flows in the live UI.
+- Run axe-core and document accessibility results.
+- Prioritize deeper test coverage because Hashle is small enough to serve as a focused testing practice project.
 
