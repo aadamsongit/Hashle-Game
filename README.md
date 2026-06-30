@@ -17,7 +17,8 @@ I set up Vitest, axe-core for accessibility testing, and Playwright for end-to-e
 - Continue validating responsive behavior across browsers and devices, with particular attention to Android.
 - Consider a small backend. Maybe a simple auth with a basic login and Oath.
 - Trade out localStorage with a database tied to auth. This would improve UX. A big part of Wordle UX is being able to preserve scores and win badges.
-- Weigh trade-off in BaaS for data vs. maybe simple Express.js setup with perhaps light SQL or NoSQL or Postgres.
+- Weigh trade-off in BaaS for data vs. maybe simple Express.js setup with perhaps light SQL or NoSQL or Postgres. ##
+- 
 - ## ⚙️ Tradeoffs
 - BaaS is super fast and a clean abstract for a quick backend+data handling.
 
