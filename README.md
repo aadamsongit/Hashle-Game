@@ -15,7 +15,7 @@ I set up Vitest, axe-core for accessibility testing, and Playwright for end-to-e
 - Review and validate the existing Vitest, Playwright, and axe-core test suites.
 - Expand regression and end-to-end test coverage around gameplay and state transitions.
 - Continue validating responsive behavior across browsers and devices, with particular attention to Android.
-- Consider a small backend. Maybe a simple auth with a basic login and oath. Prefer Google or some simple login flow. 
+- Consider a small backend. Maybe a simple auth with a basic login and Oath. Prefer Google or some simple login flow. 
 - Introduce an authentication layer with persistent user data. Anonymous users can continue using localStorage, while authenticated users store progress, streaks, and achievements in a database.
 - Weigh trade-off in BaaS for data vs. maybe simple Express.js setup with perhaps light SQL or NoSQL or Postgres.
 
