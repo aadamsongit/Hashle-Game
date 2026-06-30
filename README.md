@@ -15,4 +15,6 @@ I set up Vitest, axe-core for accessibility testing, and Playwright for end-to-e
 - Review and validate the existing Vitest, Playwright, and axe-core test suites.
 - Expand regression and end-to-end test coverage around gameplay and state transitions.
 - Continue validating responsive behavior across browsers and devices, with particular attention to Android.
+- Consider a small backend. Maybe a simple auth with a basic login and Oath.
+- Trade out localStorage with a database tied to auth. This would improve UX. A big part of Wordle UX is being able to preserve scores and win badges. 
 
