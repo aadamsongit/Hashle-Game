@@ -21,5 +21,5 @@ I set up Vitest, axe-core for accessibility testing, and Playwright for end-to-e
 
  ## ⚙️ Tradeoffs
  - Supabase and Firebase are Backend-as-Service options. Supabase is SQL and Firebase is NosQL. Supabase is often preferred as a quick complement to React applications.
- - However, there are some benefits to Postgres. 
+ - However, there are some benefits to Postgres. It pairs nicely with Prisma and Docker for strong data modeling. There's no drawback to Postgres practice. It's fairly lightweight and teaches good practices. 
 
