@@ -18,7 +18,7 @@ I set up Vitest, axe-core for accessibility testing, and Playwright for end-to-e
 - Consider a small backend. Maybe a simple auth with a basic login and Oath.
 - Add an auth layer with data handling beyond localStorage. localStorage for users not logged in. Authenticated users get better data handling. 
 - Weigh trade-off in BaaS for data vs. maybe simple Express.js setup with perhaps light SQL or NoSQL or Postgres. ##
-- 
-- ## ⚙️ Tradeoffs
+
+ ## ⚙️ Tradeoffs
 - BaaS is super fast and a clean abstract for a quick backend+data handling.
 
