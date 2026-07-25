@@ -8,11 +8,11 @@ I built from these patterns and used a brute force approach, then refactored the
 
 ## ✅ Testing
 
-**26/26 unit/component/accessibility tests passing · 2/2 E2E tests passing**
+**31/31 unit/component/accessibility tests passing · 24/24 E2E tests passing (Chromium, Firefox, WebKit)**
 
-The test suite was set up early, but it went unvalidated for a while — and it turned out to be silently broken: 7 of 18 tests were failing because a required setup file was never actually being loaded, so `@testing-library/jest-dom` matchers didn't exist. Fixing that immediately surfaced a real, previously-invisible accessibility bug (an empty `<h2>` used for a live status announcement — a genuine axe violation). From there: added targeted unit tests for the core duplicate-letter scoring logic (previously zero coverage on the highest-risk function in the app), and built out Playwright from scratch to cross-check that live gameplay scores guesses the same way the verified logic says it should.
+The test suite was set up early, but it went unvalidated for a while — and it turned out to be silently broken: 7 of 18 tests were failing because a required setup file was never actually being loaded, so `@testing-library/jest-dom` matchers didn't exist. Fixing that immediately surfaced a real, previously-invisible accessibility bug (an empty `<h2>` used for a live status announcement — a genuine axe violation). From there: added targeted unit tests for the core duplicate-letter scoring logic (previously zero coverage on the highest-risk function in the app), built out Playwright from scratch, migrated to pnpm and Tailwind CSS 4, and — once a deferred manual smoke test actually got done — found and fixed two real cross-browser layout bugs (a header overflow issue and a Tailwind cascade-layers issue silently breaking every button's styling in the app).
 
-Full writeup, including an open bug investigation and a regression scare that turned out to be a test-environment issue (not a real break): **[docs/TESTING.md](./docs/TESTING.md)**.
+Full writeup: **[docs/TESTING.md](./docs/TESTING.md)** (test details) · **[docs/DEPENDENCY-UPGRADES.md](./docs/DEPENDENCY-UPGRADES.md)** (pnpm/Tailwind 4 + the bugs that surfaced from them).
 
 ## Getting Started
 

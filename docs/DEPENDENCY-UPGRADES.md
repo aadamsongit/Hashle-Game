@@ -11,4 +11,7 @@ Migrated off npm and Tailwind CSS 3, on a dedicated branch, verifying with the f
 ## Not yet done
 
 - Native Tailwind v4 `@theme` conversion — currently running in `@config` compatibility mode against the original `tailwind.config.js`, not yet ported to CSS-native theme syntax.
-- Visual/manual smoke test of the app under Tailwind 4 (dark mode, the custom RGB keyboard gradient, tile border colors) — only automated tests and the production build have been verified so far.
+
+## Follow-up: the deferred visual smoke test found real bugs
+
+The manual visual check that was deliberately deferred at merge time (see above) turned up two real layout bugs once actually done — a header overflow issue and a Tailwind-cascade-layers issue affecting every button in the app. Both root-caused, fixed, covered with new cross-browser E2E tests, and merged. Full writeup: [TESTING.md](./TESTING.md#-uilayout-fixes-2026-07-25).
