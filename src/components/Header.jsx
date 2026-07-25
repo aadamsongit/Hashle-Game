@@ -27,9 +27,9 @@ function Header({ handleToggle, toastMessage, darkMode }) {
       {/* Title For Application*/}
       <div className="flex justify-center mt-16 sm:mb-12">
         <div className="w-full ipad:w-auto md:px-4 terminal-container">
-          <h1 className="sm:text-3xl font-bold text-lg pl-[50px] sm:pl-0 md:pl-0 terminal-title-parent">
+          <h1 className="sm:text-3xl font-bold text-lg pl-[50px] sm:pl-0 md:pl-0 text-center terminal-title-parent">
             <span
-              className={`terminal-title ipad:w-[23ch] ${
+              className={`terminal-title ${
                 isDone ? "terminal-title--done" : ""
               }`}
               aria-label={TITLE_TEXT}

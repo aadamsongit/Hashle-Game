@@ -61,29 +61,33 @@ body {
   z-index: -1
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  all: unset;
-  position: relative;
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: var(--button-bg);
-  cursor: pointer;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+/* Scoped into Tailwind's base layer deliberately (2026-07-25): this
+   rule was plain unlayered CSS, and unlayered styles always beat
+   layered ones in the CSS cascade regardless of specificity — so it
+   was silently overriding every Tailwind utility class applied to
+   any button in the app (min-w-0, px-2, text-lg, all of it), with no
+   visible error. That's what was actually breaking the on-screen
+   keyboard's responsive layout, not a missing/misconfigured utility. */
+@layer base {
+  button {
+    all: unset;
+    position: relative;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: var(--button-bg);
+    cursor: pointer;
+  }
+  button:hover {
+    border-color: #646cff;
+  }
+  button:focus,
+  button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+  }
 }
 
 @media (prefers-color-scheme: light) {
@@ -166,16 +170,22 @@ button:focus-visible {
   }
 }
 
-/* Default for Windows laptops */
+/* Default for Windows laptops.
+   NOTE (2026-07-25): this used to be 690px, which was already too
+   narrow for the actual title string at this font-size/letter-spacing
+   (~910px needed) — it just wasn't visible because the old typewriter
+   CSS clipped the overflow via overflow:hidden. Now that the reveal
+   is JS-driven and nothing clips it, the container has to actually be
+   wide enough, or the text renders past its right edge instead of
+   staying centered. */
 .terminal-container {
-  max-width: 690px;
-  /* default, works on most screens */
+  max-width: 960px;
 }
 
 /* Problematic Safari/iPad breakpoint only */
 @media (min-width: 768px) and (max-width: 1920px) {
   body.mac-fix .terminal-container {
-    max-width: 720px;
+    max-width: 990px;
   }
 }
 
