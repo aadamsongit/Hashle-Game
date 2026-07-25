@@ -53,25 +53,6 @@ export const useKeyboard = () => {
     return `min-w-0 shrink text-lg px-2 sm:px-4 py-1 sm:py-2 ${gradientClass} ${buttonClass} ${darkModeClass}`.trim();
   };
 
-  const handleLetterInput = (
-    letter,
-    guessedWord,
-    setGuessedWord,
-    currentWord,
-    handleDelete,
-    handleEnter
-  ) => {
-    if (letter === "Delete") {
-      handleDelete();
-    } else if (letter === "Enter") {
-      handleEnter();
-    } else {
-      if (guessedWord.length < currentWord.length) {
-        setGuessedWord((prev) => [...prev, letter]);
-      }
-    }
-  };
-
   return {
     isRGBActive,
     keyboardRows,
@@ -79,6 +60,5 @@ export const useKeyboard = () => {
     getGradientClass,
     getRainbowLetterClass,
     getButtonClass,
-    handleLetterInput,
   };
 };
