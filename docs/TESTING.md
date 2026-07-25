@@ -6,6 +6,7 @@
 - Reproduce and guard against the reported all-gray-row bug specifically — see the open question below.
 - Run axe-core against more states of the app (mid-game, win, loss), not just initial render.
 - Prioritize deeper test coverage because Hashle is small enough to serve as a focused testing practice project.
+- **TODO: add visuals.** Drop screenshots into `docs/images/` and reference them here: a code screenshot (e.g. the `rebuildStatuses.js` test file or the fix diff), a Playwright console/UI-mode screenshot, and the reported bug screenshot (the all-gray guess row from the open question below). Also worth doing the manual visual smoke test under Tailwind 4 while in there (dark mode, RGB keyboard gradient, tile border colors) — that check was deferred at merge time.
 
 ## ✅ Testing Progress (2026-07-25)
 
