@@ -61,29 +61,33 @@ body {
   z-index: -1
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  all: unset;
-  position: relative;
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: var(--button-bg);
-  cursor: pointer;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+/* Scoped into Tailwind's base layer deliberately (2026-07-25): this
+   rule was plain unlayered CSS, and unlayered styles always beat
+   layered ones in the CSS cascade regardless of specificity — so it
+   was silently overriding every Tailwind utility class applied to
+   any button in the app (min-w-0, px-2, text-lg, all of it), with no
+   visible error. That's what was actually breaking the on-screen
+   keyboard's responsive layout, not a missing/misconfigured utility. */
+@layer base {
+  button {
+    all: unset;
+    position: relative;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: var(--button-bg);
+    cursor: pointer;
+  }
+  button:hover {
+    border-color: #646cff;
+  }
+  button:focus,
+  button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+  }
 }
 
 @media (prefers-color-scheme: light) {
@@ -128,35 +132,33 @@ button:focus-visible {
   border-right: 0.11em solid orange;
   letter-spacing: 0.15em;
   display: inline-block; /* Keeps the text on one line */
-  overflow: hidden; /* Hides the text before animation starts */
-  
-  /* Adjust the width dynamically to reveal text */
-  max-width: 100%; /* Allow the text to expand fully */
-  
-  animation: 
-    typing 3.5s steps(30, end) forwards, /* Typing animation */
-    blink-caret 0.5s step-end infinite;  /* Blinking cursor effect */
+
+  /* The text reveal itself is driven by JS (useTypewriter), one
+     character at a time, rather than a CSS width/steps() animation.
+     That technique required its own "100%" width to resolve against
+     the text's true rendered width — which font metrics (monospace +
+     letter-spacing + emoji glyph width) could throw off relative to
+     the steps() count, permanently clipping the tail of the text via
+     overflow: hidden. JS just renders the exact substring, always
+     correct, no width math, no Safari-specific override needed. */
+  animation: blink-caret 0.5s step-end infinite; /* Blinking cursor */
 }
 
-/* Safari-specific fix */
-@supports (-webkit-touch-callout: none) {
-  .terminal-title {
-    animation: typing 3.5s steps(32, end) forwards,
-      blink-caret 0.5s step-end infinite;
-  }
+.terminal-title--done {
+  border-right: none; /* Cursor disappears once typing finishes */
+  animation: none;
 }
 
 @media (max-width: 670px) {
   .terminal-title {
     max-width: 500px;
     box-sizing: border-box;
-    overflow: hidden;
     display: block;
     text-align: center;
     white-space: normal;
     /* keep inline-block */
     border-right: none; /* Remove border for smaller screens */
-    animation: none; /* Disable animations on small screens */
+    animation: none; /* No caret blink on small screens */
     padding-bottom: 3.5rem; /* Add some padding for better spacing */
     font-size: 1.5rem; /* Adjust font size for smaller screens */
   }
@@ -168,33 +170,32 @@ button:focus-visible {
   }
 }
 
-/* Default for Windows laptops */
+/* Default for Windows laptops.
+   NOTE (2026-07-25): this used to be 690px, which was already too
+   narrow for the actual title string at this font-size/letter-spacing
+   (~910px needed) — it just wasn't visible because the old typewriter
+   CSS clipped the overflow via overflow:hidden. Now that the reveal
+   is JS-driven and nothing clips it, the container has to actually be
+   wide enough, or the text renders past its right edge instead of
+   staying centered. */
 .terminal-container {
-  max-width: 690px;
-  /* default, works on most screens */
+  max-width: 960px;
 }
 
-/* Problematic Safari/iPad breakpoint only */
-@media (min-width: 768px) and (max-width: 1920px) {
-  body.mac-fix .terminal-container {
-    max-width: 720px;
-  }
-}
+/* Removed (2026-07-25): a body.mac-fix .terminal-container max-width
+   bump to 990px, driven by JS UA-sniffing in App.jsx. Verified via
+   WebKit (Playwright, Desktop Safari device profile) that this is no
+   longer needed — WebKit's actual rendered title width (698.9px) is
+   narrower than Chromium's (~907.6px) for the identical string, so
+   the base 960px above already has ~260px of slack for it. This was
+   almost certainly compensating for the old steps()-based typewriter
+   (now replaced) rather than a real ongoing cross-engine need. */
 
 /* @media (min-width: 768px) and (max-width: 1024px) {
   .terminal-title-parent h1 {
     max-width: 700px;
   }
 } */
-
-@keyframes typing {
-  from { 
-    width: 0; /* Start with no visible text */
-  }
-  to { 
-    width: 100%; /* Expand to full text width */
-  }
-}
 
 @keyframes blink-caret {
   from, to { 

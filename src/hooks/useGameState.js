@@ -6,7 +6,7 @@ import { rebuildStatuses } from "../utils/rebuildStatuses";
 const maxRows = 6;
 
 export const useGameState = (data) => {
-  const [currentWord, setCurrentWord] = useState("PLACE");
+  const [currentWord] = useState(() => getDailyWord(data).toUpperCase());
   const [guessedWord, setGuessedWord] = useState([]);
   const [allGuesses, setAllGuesses] = useState(() => {
     try {
@@ -29,21 +29,12 @@ export const useGameState = (data) => {
   const [gameLoss, setGameLoss] = useState(false);
   const [hasHydrated, setHasHydrated] = useState(false);
 
-  // Initialize game state
+  // Restore row index / win-loss state from a saved game (allGuesses itself
+  // is already lazily initialized from the same localStorage data above).
   useEffect(() => {
-    const newWord = getDailyWord(data).toUpperCase();
-    setCurrentWord(newWord);
-
     const dayIndex = getDayIndex();
     const savedData = JSON.parse(localStorage.getItem("dailyResults") || "{}");
     const todayData = savedData[dayIndex];
-
-    setAllGuesses((prevAllGuesses) => {
-      if (prevAllGuesses.length === 0 && todayData?.boardState) {
-        return todayData.boardState;
-      }
-      return prevAllGuesses;
-    });
 
     if (todayData?.boardState) {
       // Find the first row that is not fully filled
@@ -62,7 +53,7 @@ export const useGameState = (data) => {
     }
 
     setHasHydrated(true);
-  }, [data]);
+  }, []);
 
   // Save game state to localStorage
   useEffect(() => {

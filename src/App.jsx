@@ -13,25 +13,6 @@ import { rebuildStatuses } from "./utils/rebuildStatuses";
 import { isCorrectWord } from "./utils/wordHelpers.js";
 
 function App() {
-  useEffect(() => {
-    let isMacOS = false;
-
-    // Modern approach: userAgentData (Chrome, Edge, newer browsers)
-    if (navigator.userAgentData) {
-      isMacOS = navigator.userAgentData.platform.toLowerCase().includes("mac");
-    } else {
-      // Fallback for older browsers: userAgent string
-      isMacOS = navigator.userAgent.toLowerCase().includes("macintosh");
-    }
-
-    if (isMacOS) {
-      document.body.classList.add("mac-fix");
-      console.log("macOS detected!");
-    } else {
-      console.log("Not macOS");
-    }
-  }, []);
-
   const [darkMode, handleToggle] = useDarkMode();
 
   const {
