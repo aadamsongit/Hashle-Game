@@ -230,16 +230,16 @@ function App() {
 
       {/* Game status section */}
       <section aria-label="Game Status">
-        <h2
-          className={`text-center mb-16 ${getGameStatusClass(
-            gameWon,
-            gameLoss
-          )}`}
+        <div
+          role="status"
+          className={`text-center mb-16 ${
+            getGameStatusClass(gameWon, gameLoss) || ""
+          }`}
           aria-live="polite"
           aria-atomic="true"
         >
           {getGameStatusMessage(gameWon, gameLoss)}
-        </h2>
+        </div>
       </section>
 
       {/* Game board */}

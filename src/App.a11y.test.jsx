@@ -52,9 +52,12 @@ describe("App Accessibility", () => {
     expect(mainHeading).toBeInTheDocument();
     expect(mainHeading).toHaveTextContent("Hashle: An Evolving Word Game");
 
-    // Check for game status heading (now H2)
-    const statusHeading = screen.getByRole("heading", { level: 2 });
-    expect(statusHeading).toBeInTheDocument();
+    // Game status is a live-region announcement, not a document heading —
+    // it's empty until a game is won/lost, so it must not be a heading role
+    // (an empty heading is an axe violation). Verify it exists as a status
+    // region instead.
+    const statusRegion = screen.getByRole("status");
+    expect(statusRegion).toBeInTheDocument();
   });
 
   it("should have proper button labels and roles", async () => {
