@@ -4,14 +4,12 @@ Hashle began as an elaboration of Scrimba's Hangman game. Hangman introduces som
 
 I built from these patterns and used a brute force approach, then refactored the codebase into more modular/DRY code using some agentic guidance from Cursor tools in helping with patterns. This surfaced a couple of bugs, which I fixed. I spent a while studying the more modular codebase. The monolith component has been refactored into custom Hooks and pure functions to make it easier to continue with testing. 
 
-I set up Vitest, axe-core for accessibility testing, and Playwright for end-to-end testing. The testing infrastructure is in place, but the suites themselves still need to be reviewed and validated. I haven't yet performed a thorough inspection of the generated tests.
+I set up Vitest, axe-core for accessibility testing, and Playwright for end-to-end testing. That infrastructure has since been reviewed, fixed where it was silently broken, and expanded — see Testing Progress below for what that turned up. The stack is also now on pnpm and Tailwind CSS 4 (see Dependency Upgrades below).
 
 ---
 
 ## ⚙️ Technical Debt & Future Improvements
 
-- Upgrade from Tailwind CSS 3 to Tailwind CSS 4.
-- Evaluate migrating from npm to pnpm for stricter dependency management.
 - Review and validate the existing Vitest, Playwright, and axe-core test suites.
 - Expand regression and end-to-end test coverage around gameplay and state transitions.
 - Continue validating responsive behavior across browsers and devices, with particular attention to Android.
@@ -43,14 +41,11 @@ Next.js becomes more compelling if Hashle grows to include authenticated users, 
 
 Post-deployment, some behavioral bugs were reported. The next step is to reproduce and guard against those bugs with a combination of unit tests and E2E tests. Accessibility should also be validated with axe-core.
 
-## ⚙️ Suggested Testing Methodology
+## ⚙️ Still Open on Testing
 
-- Validate the existing Vitest, Playwright, and axe-core setup.
-- Run the current unit test suite and confirm which tests are meaningful.
-- Add unit tests for pure gameplay logic and state transition helpers.
-- Add regression tests for previously reported behavioral bugs.
-- Use Playwright to test core user flows in the live UI.
-- Run axe-core and document accessibility results.
+- Add unit-level coverage for `addStatusesandClasses` (the live-guess coloring path in `useWordLogic.js`) directly, not just via the one E2E case — it's currently only checked against a single duplicate-letter scenario.
+- Reproduce and guard against the reported all-gray-row bug specifically — see the open question in Testing Progress below.
+- Run axe-core against more states of the app (mid-game, win, loss), not just initial render.
 - Prioritize deeper test coverage because Hashle is small enough to serve as a focused testing practice project.
 
 ## ✅ Testing Progress (2026-07-25)
@@ -64,4 +59,12 @@ Followed through on the plan above. What actually turned up:
 - **Open question, not yet resolved:** a user reported an all-gray guess row that shouldn't have been possible given the word list. The live-vs-rebuilt implementation divergence is now ruled out as the cause for the tested case. The stronger remaining hypothesis is `getDayIndex()` computing the daily word boundary from local `Date.now()` with no timezone/day-rollover defensiveness — a classic "happened once, near midnight, never reproduced" bug shape. Not confirmed yet.
 
 Current state: 26/26 unit/component/a11y tests passing, 2/2 E2E tests passing.
+
+## 📦 Dependency Upgrades (2026-07-25)
+
+Migrated off npm and Tailwind CSS 3, on a dedicated branch, verifying with the full test suite after each step rather than as one large change.
+
+- **npm → pnpm.** Used `pnpm import` to preserve exact resolved versions from `package-lock.json` rather than letting a fresh install re-resolve anything. esbuild's postinstall script was being silently blocked by pnpm's build-script approval gate — approved via `pnpm-workspace.yaml` so a fresh clone works without a manual interactive step.
+- **Tailwind CSS 3 → 4.** Used the official `@tailwindcss/upgrade` codemod rather than hand-editing config. It converted the `@tailwind` directives to a single `@import`, and linked the existing `tailwind.config.js` via `@config` compat mode (it didn't auto-convert to native CSS `@theme` syntax — that's a possible later follow-up, not required right now). Manually updated `postcss.config.mjs` to `@tailwindcss/postcss` (the codemod can't touch files with dynamic JS in them) and removed `autoprefixer`, since v4's Lightning CSS engine handles vendor prefixing internally.
+- **Regression scare, investigated and resolved:** right after the Tailwind 4 change, both E2E tests failed — looked like a real break. Root cause turned out to be unrelated to Tailwind: a stale dev server from earlier in the session was still bound to port 5173, and Playwright's `reuseExistingServer` config was silently testing against that old instance instead of the current code. Killed the stray process, fixed `playwright.config.js`'s `webServer` command to use `pnpm run dev`, and confirmed clean against a fresh server. Worth noting given a previous agentic refactor of this project broke a live deployment — this time the test suite caught the apparent break immediately, and it got root-caused correctly instead of blamed on the actual change.
 
