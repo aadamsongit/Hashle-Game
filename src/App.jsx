@@ -1,49 +1,47 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useReducer } from "react";
 import "./index.css";
 import data from "./data.json";
 import Header from "./components/Header.jsx";
 import { useDarkMode } from "./hooks/useDarkMode";
-import { useGameState } from "./hooks/useGameState";
-import { useWordLogic } from "./hooks/useWordLogic";
 import { useKeyboard } from "./hooks/useKeyboard.jsx";
 import { useAnimations } from "./hooks/useAnimations";
 import { useGameBoard } from "./hooks/useGameBoard";
-import { rebuildStatuses } from "./utils/rebuildStatuses";
-import { isCorrectWord } from "./utils/wordHelpers.js";
+import {
+  gameReducer,
+  createInitialState,
+  getDisabledLetters,
+} from "./reducer/gameReducer";
+import { getDailyWord } from "./utils/getRandomWord";
+import { getDayIndex, saveToLocalStorage } from "./utils/gameHelpers";
+import {
+  isValidWord,
+  isValidWordLength,
+  isCorrectWord,
+} from "./utils/wordHelpers.js";
 
 function App() {
   const [darkMode, handleToggle] = useDarkMode();
 
+  const initialWord = useMemo(() => getDailyWord(data).toUpperCase(), []);
+  const [state, dispatch] = useReducer(
+    gameReducer,
+    initialWord,
+    createInitialState
+  );
   const {
     currentWord,
     guessedWord,
-    setGuessedWord,
     allGuesses,
-    setAllGuesses,
     currentRowIndex,
     gameWon,
-    setGameWon,
     gameLoss,
-    setGameLoss,
     hasHydrated,
-    updateCurrentRow,
-  } = useGameState(data);
-
-  const {
-    letterStatuses,
     classNames,
-    setClassNames,
     keyStatuses,
-    setKeyStatuses,
-    disabledLetters,
-    currentWordArray,
-    validateAndProcessGuess,
-    addtoGuessandReset,
-    addStatusesandClasses,
-    handleWin,
-    handleLoss,
-  } = useWordLogic(data, currentWord, hasHydrated);
+  } = state;
+
+  const disabledLetters = getDisabledLetters(keyStatuses);
 
   const {
     isRGBActive,
@@ -51,7 +49,6 @@ function App() {
     handleKeyboardToggle,
     getRainbowLetterClass,
     getButtonClass,
-    handleLetterInput,
   } = useKeyboard();
 
   const {
@@ -72,92 +69,73 @@ function App() {
     getGameStatusClass,
   } = useGameBoard();
 
+  // Hydrate from localStorage once on mount.
+  useEffect(() => {
+    const dayIndex = getDayIndex();
+    const savedData = JSON.parse(localStorage.getItem("dailyResults") || "{}");
+    const todayData = savedData[dayIndex];
+
+    dispatch({
+      type: "HYDRATE",
+      payload: todayData
+        ? { boardState: todayData.boardState, outcome: todayData.outcome }
+        : null,
+    });
+  }, []);
+
+  // Persist board state to localStorage whenever it changes post-hydration.
+  useEffect(() => {
+    if (!hasHydrated) return;
+    const status = gameWon ? "win" : gameLoss ? "loss" : "in_progress";
+    saveToLocalStorage(allGuesses, status, getDayIndex());
+  }, [allGuesses, hasHydrated, gameWon, gameLoss]);
+
   // Handle letter input from keyboard
   const guessWord = (letter) => {
     if (gameWon || gameLoss) return;
 
-    handleLetterInput(
-      letter,
-      guessedWord,
-      setGuessedWord,
-      currentWord,
-      handleDelete,
-      handleEnter
-    );
+    if (letter === "Delete") {
+      handleDelete();
+    } else if (letter === "Enter") {
+      handleEnter();
+    } else {
+      dispatch({ type: "TYPE_LETTER", payload: { letter } });
+    }
   };
 
   const handleDelete = () => {
-    setGuessedWord((prev) => prev.slice(0, -1));
+    dispatch({ type: "DELETE_LETTER" });
   };
 
   const handleEnter = () => {
-    validateAndProcessGuess(
-      guessedWord,
-      currentRowIndex,
-      allGuesses,
-      setAllGuesses,
-      updateCurrentRow,
-      setGuessedWord,
-      () => triggerShakeEffect(findEmptyRowIndex(allGuesses)),
-      showToast,
-      () => handleGuessReveal(guessedWord, currentRowIndex),
-      addStatusesandClasses,
-      triggerWin
-    );
-  };
+    const guessedWordStr = guessedWord.join("");
 
-  const triggerWin = () => {
-    handleGuessReveal(guessedWord, currentRowIndex);
+    if (!isValidWordLength(guessedWordStr, currentWord)) {
+      triggerShakeEffect(findEmptyRowIndex(allGuesses));
+      return;
+    }
 
-    setTimeout(() => {
-      addStatusesandClasses(guessedWord, currentRowIndex);
+    const won = isCorrectWord(guessedWordStr, currentWord);
+    if (!won && !isValidWord(guessedWordStr, data)) {
+      showToast();
+      triggerShakeEffect(findEmptyRowIndex(allGuesses));
+      return;
+    }
 
+    const rowIndex = currentRowIndex;
+    const submittedWord = guessedWord;
+
+    dispatch({ type: "SUBMIT_GUESS", payload: { guessedWord: submittedWord } });
+    handleGuessReveal(submittedWord, rowIndex);
+
+    if (won) {
       setTimeout(() => {
-        bounceWinRow(currentWordArray, currentRowIndex);
-      }, 1200);
-    }, 300);
-
-    handleWin(
-      guessedWord,
-      currentRowIndex,
-      allGuesses,
-      setAllGuesses,
-      setGuessedWord,
-      setGameWon,
-      () => handleGuessReveal(guessedWord, currentRowIndex)
-    );
+        setTimeout(() => {
+          bounceWinRow(currentWord.split(""), rowIndex);
+        }, 1200);
+      }, 300);
+    }
   };
-
-  // Effect to trigger loss when max guesses reached
-  useEffect(() => {
-    if (currentRowIndex === 6) {
-      handleLoss(
-        guessedWord,
-        currentRowIndex,
-        allGuesses,
-        setAllGuesses,
-        setGuessedWord,
-        setGameLoss
-      );
-    }
-  }, [
-    currentRowIndex,
-    guessedWord,
-    allGuesses,
-    setAllGuesses,
-    setGuessedWord,
-    setGameLoss,
-  ]);
-
-  // Effect to rebuild statuses when game state changes
-  useEffect(() => {
-    if (hasHydrated && allGuesses.length > 0) {
-      const { classNames: newClassNames, keyStatuses: newKeyStatuses } =
-        rebuildStatuses(allGuesses, currentWord);
-      setClassNames(newClassNames);
-      setKeyStatuses(newKeyStatuses);
-    }
-  }, [hasHydrated, currentWord, setClassNames, setKeyStatuses]);
 
   const emptyRowIndex = findEmptyRowIndex(allGuesses);
 

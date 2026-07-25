@@ -154,6 +154,7 @@ body {
     max-width: 500px;
     box-sizing: border-box;
     display: block;
+    margin: 0 auto;
     text-align: center;
     white-space: normal;
     /* keep inline-block */
