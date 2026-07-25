@@ -182,12 +182,14 @@ body {
   max-width: 960px;
 }
 
-/* Problematic Safari/iPad breakpoint only */
-@media (min-width: 768px) and (max-width: 1920px) {
-  body.mac-fix .terminal-container {
-    max-width: 990px;
-  }
-}
+/* Removed (2026-07-25): a body.mac-fix .terminal-container max-width
+   bump to 990px, driven by JS UA-sniffing in App.jsx. Verified via
+   WebKit (Playwright, Desktop Safari device profile) that this is no
+   longer needed — WebKit's actual rendered title width (698.9px) is
+   narrower than Chromium's (~907.6px) for the identical string, so
+   the base 960px above already has ~260px of slack for it. This was
+   almost certainly compensating for the old steps()-based typewriter
+   (now replaced) rather than a real ongoing cross-engine need. */
 
 /* @media (min-width: 768px) and (max-width: 1024px) {
   .terminal-title-parent h1 {
