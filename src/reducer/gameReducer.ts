@@ -3,7 +3,48 @@ import { isCorrectWord } from "../utils/wordHelpers";
 
 export const MAX_ROWS = 6;
 
-export function createInitialState(currentWord) {
+export type LetterStatus = "correct" | "present" | "absent";
+export type KeyStatuses = Record<string, LetterStatus>;
+export type TileClass = "bg-green" | "bg-yellow" | "bg-gray";
+export type ClassNames = TileClass[][];
+export type BoardState = string[][];
+export type Outcome = "win" | "loss" | "in_progress";
+
+export interface GameState {
+  currentWord: string;
+  guessedWord: string[];
+  allGuesses: BoardState;
+  currentRowIndex: number;
+  gameWon: boolean;
+  gameLoss: boolean;
+  hasHydrated: boolean;
+  classNames: ClassNames;
+  keyStatuses: KeyStatuses;
+}
+
+export type GameAction =
+  | {
+      type: "HYDRATE";
+      payload?: { boardState?: BoardState; outcome?: Outcome } | null;
+    }
+  | { type: "TYPE_LETTER"; payload: { letter: string } }
+  | { type: "DELETE_LETTER" }
+  | { type: "SUBMIT_GUESS"; payload: { guessedWord: string[] } };
+
+// rebuildStatuses/isCorrectWord live in plain-JS utils (out of scope for
+// this conversion), so their inferred types are looser than what this
+// reducer promises its own consumers — the casts below are the seam.
+function rebuildStatusesTyped(
+  guesses: BoardState,
+  correctWord: string
+): { classNames: ClassNames; keyStatuses: KeyStatuses } {
+  return rebuildStatuses(guesses, correctWord) as {
+    classNames: ClassNames;
+    keyStatuses: KeyStatuses;
+  };
+}
+
+export function createInitialState(currentWord: string): GameState {
   return {
     currentWord,
     guessedWord: [],
@@ -23,7 +64,7 @@ export function createInitialState(currentWord) {
 // dispatch, in the component — this reducer only ever receives a guess
 // that's already known to be acceptable. It doesn't have access to the
 // full word list, so it couldn't validate that itself anyway.
-export function gameReducer(state, action) {
+export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case "HYDRATE": {
       const { boardState, outcome } = action.payload || {};
@@ -36,7 +77,7 @@ export function gameReducer(state, action) {
         ? resolveNextRowIndex(boardState)
         : state.currentRowIndex;
 
-      const { classNames, keyStatuses } = rebuildStatuses(
+      const { classNames, keyStatuses } = rebuildStatusesTyped(
         allGuesses,
         state.currentWord
       );
@@ -91,7 +132,7 @@ export function gameReducer(state, action) {
       const gameWon = isCorrectWord(guessedWord.join(""), state.currentWord);
       const gameLoss = !gameWon && currentRowIndex >= MAX_ROWS;
 
-      const { classNames, keyStatuses } = rebuildStatuses(
+      const { classNames, keyStatuses } = rebuildStatusesTyped(
         allGuesses,
         state.currentWord
       );
@@ -113,7 +154,7 @@ export function gameReducer(state, action) {
   }
 }
 
-function resolveNextRowIndex(boardState) {
+function resolveNextRowIndex(boardState: BoardState): number {
   const index = boardState.findIndex((row) => row.some((cell) => cell === ""));
   return index === -1 ? boardState.length : index;
 }
@@ -121,7 +162,7 @@ function resolveNextRowIndex(boardState) {
 // Derived, not stored — a letter is "disabled" purely as a function of
 // keyStatuses, so there's no separate piece of state that could ever
 // drift out of sync with it.
-export function getDisabledLetters(keyStatuses) {
+export function getDisabledLetters(keyStatuses: KeyStatuses): string[] {
   return Object.keys(keyStatuses).filter(
     (letter) => keyStatuses[letter] === "absent"
   );

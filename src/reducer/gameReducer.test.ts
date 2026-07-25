@@ -4,6 +4,7 @@ import {
   createInitialState,
   getDisabledLetters,
   MAX_ROWS,
+  type GameAction,
 } from "./gameReducer";
 
 describe("createInitialState", () => {
@@ -228,7 +229,7 @@ describe("gameReducer > purity under double-invocation (React StrictMode)", () =
   it("calling the reducer twice with the same original state produces the same result and never mutates the original", () => {
     const original = createInitialState("APPLE");
     const originalRowZeroRef = original.allGuesses[0];
-    const action = {
+    const action: GameAction = {
       type: "SUBMIT_GUESS",
       payload: { guessedWord: ["S", "T", "A", "K", "E"] },
     };
@@ -253,7 +254,10 @@ describe("gameReducer > purity under double-invocation (React StrictMode)", () =
       ["", "", "", "", ""],
     ];
     const originalBoardRowRef = boardState[0];
-    const action = { type: "HYDRATE", payload: { boardState, outcome: "in_progress" } };
+    const action: GameAction = {
+      type: "HYDRATE",
+      payload: { boardState, outcome: "in_progress" },
+    };
 
     const resultA = gameReducer(original, action);
     const resultB = gameReducer(original, action);
