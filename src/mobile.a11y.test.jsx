@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import { axe, toHaveNoViolations } from "jest-axe";
 import { describe, it, expect, beforeEach } from "vitest";
 import App from "./App";
@@ -48,7 +48,9 @@ describe("Mobile Accessibility", () => {
     render(<App />);
 
     // Wait for component to hydrate
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    });
 
     // Check that all buttons exist and have proper accessibility
     const buttons = screen.getAllByRole("button");
@@ -78,7 +80,9 @@ describe("Mobile Accessibility", () => {
     const { container } = render(<App />);
 
     // Wait for component to hydrate
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    });
 
     // Run accessibility audit on mobile viewport
     const results = await axe(container, {
@@ -103,7 +107,9 @@ describe("Mobile Accessibility", () => {
     render(<App />);
 
     // Wait for component to hydrate
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    });
 
     // Check that main title has responsive sizing
     const mainTitle = screen.getByRole("heading", { level: 1 });
@@ -118,7 +124,9 @@ describe("Mobile Accessibility", () => {
     render(<App />);
 
     // Wait for component to hydrate
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    });
 
     // All interactive elements should still be keyboard accessible
     const interactiveElements = screen.getAllByRole("button");

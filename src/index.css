@@ -128,35 +128,33 @@ button:focus-visible {
   border-right: 0.11em solid orange;
   letter-spacing: 0.15em;
   display: inline-block; /* Keeps the text on one line */
-  overflow: hidden; /* Hides the text before animation starts */
-  
-  /* Adjust the width dynamically to reveal text */
-  max-width: 100%; /* Allow the text to expand fully */
-  
-  animation: 
-    typing 3.5s steps(30, end) forwards, /* Typing animation */
-    blink-caret 0.5s step-end infinite;  /* Blinking cursor effect */
+
+  /* The text reveal itself is driven by JS (useTypewriter), one
+     character at a time, rather than a CSS width/steps() animation.
+     That technique required its own "100%" width to resolve against
+     the text's true rendered width — which font metrics (monospace +
+     letter-spacing + emoji glyph width) could throw off relative to
+     the steps() count, permanently clipping the tail of the text via
+     overflow: hidden. JS just renders the exact substring, always
+     correct, no width math, no Safari-specific override needed. */
+  animation: blink-caret 0.5s step-end infinite; /* Blinking cursor */
 }
 
-/* Safari-specific fix */
-@supports (-webkit-touch-callout: none) {
-  .terminal-title {
-    animation: typing 3.5s steps(32, end) forwards,
-      blink-caret 0.5s step-end infinite;
-  }
+.terminal-title--done {
+  border-right: none; /* Cursor disappears once typing finishes */
+  animation: none;
 }
 
 @media (max-width: 670px) {
   .terminal-title {
     max-width: 500px;
     box-sizing: border-box;
-    overflow: hidden;
     display: block;
     text-align: center;
     white-space: normal;
     /* keep inline-block */
     border-right: none; /* Remove border for smaller screens */
-    animation: none; /* Disable animations on small screens */
+    animation: none; /* No caret blink on small screens */
     padding-bottom: 3.5rem; /* Add some padding for better spacing */
     font-size: 1.5rem; /* Adjust font size for smaller screens */
   }
@@ -186,15 +184,6 @@ button:focus-visible {
     max-width: 700px;
   }
 } */
-
-@keyframes typing {
-  from { 
-    width: 0; /* Start with no visible text */
-  }
-  to { 
-    width: 100%; /* Expand to full text width */
-  }
-}
 
 @keyframes blink-caret {
   from, to { 

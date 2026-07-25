@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import { axe, toHaveNoViolations } from "jest-axe";
 import { describe, it, expect, beforeEach } from "vitest";
 import App from "./App";
@@ -35,7 +35,9 @@ describe("App Accessibility", () => {
     const { container } = render(<App />);
 
     // Wait for component to hydrate
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    });
 
     const results = await axe(container);
     expect(results).toHaveNoViolations();
@@ -45,12 +47,21 @@ describe("App Accessibility", () => {
     render(<App />);
 
     // Wait for component to hydrate
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    });
 
-    // Check for main heading
+    // Check for main heading. The title types out via useTypewriter, so
+    // its visible text content fills in progressively over real time —
+    // asserting on that would mean an arbitrarily long/flaky wait here.
+    // What actually matters for accessibility is the accessible name a
+    // screen reader announces, which comes from aria-label and is the
+    // full, stable string from the very first render.
     const mainHeading = screen.getByRole("heading", { level: 1 });
     expect(mainHeading).toBeInTheDocument();
-    expect(mainHeading).toHaveTextContent("Hashle: An Evolving Word Game");
+    expect(mainHeading).toHaveAccessibleName(
+      "🚀Hashle: An Evolving Word Game"
+    );
 
     // Game status is a live-region announcement, not a document heading —
     // it's empty until a game is won/lost, so it must not be a heading role
@@ -64,7 +75,9 @@ describe("App Accessibility", () => {
     render(<App />);
 
     // Wait for component to hydrate
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    });
 
     // Check keyboard buttons have proper roles
     const keyboardButtons = screen.getAllByRole("button");
@@ -81,7 +94,9 @@ describe("App Accessibility", () => {
     const { container } = render(<App />);
 
     // Wait for component to hydrate
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    });
 
     // Check for main landmark
     const main = container.querySelector("main");
@@ -100,7 +115,9 @@ describe("App Accessibility", () => {
     const { container } = render(<App />);
 
     // Wait for component to hydrate
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    });
 
     // This is a basic check - axe-core will do more thorough contrast testing
     const results = await axe(container, {
@@ -119,7 +136,9 @@ describe("App Accessibility", () => {
     render(<App />);
 
     // Wait for component to hydrate
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    });
 
     // Check that buttons are focusable (buttons are focusable by default in HTML)
     const buttons = screen.getAllByRole("button");
