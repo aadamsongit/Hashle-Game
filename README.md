@@ -1,3 +1,6 @@
+
+
+
 # Hashle: Decode the Words
 
 A Wordle-style word game built with React, Vite, and Tailwind CSS.
