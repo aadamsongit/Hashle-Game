@@ -1,4 +1,3 @@
-import React from "react";
 import { useEffect, useMemo, useReducer } from "react";
 import "./index.css";
 import data from "./data.json";
@@ -136,8 +135,6 @@ function App() {
       }, 300);
     }
   };
-
-  const emptyRowIndex = findEmptyRowIndex(allGuesses);
 
   // Keyboard elements
   const keyboardElements = keyboardRows.map((row, rowIndex) => (

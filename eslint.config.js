@@ -18,7 +18,7 @@ export default [
         sourceType: 'module',
       },
     },
-    settings: { react: { version: '18.3' } },
+    settings: { react: { version: '19.0' } },
     plugins: {
       react,
       'react-hooks': reactHooks,
@@ -40,4 +40,24 @@ export default [
     ...config,
     files: ['**/*.ts', '**/*.tsx'],
   })),
+  {
+    files: ['**/*.test.{js,jsx}', '**/setupTests.js', '**/vitest.setup.js'],
+    languageOptions: {
+      globals: { ...globals.browser, ...globals.vitest, ...globals.node },
+    },
+  },
+  {
+    files: [
+      '*.config.{js,mjs,ts}',
+      'playwright.config.js',
+      'vite.config.js',
+      'vitest.config.js',
+      'tailwind.config.js',
+      'postcss.config.mjs',
+      'eslint.config.js',
+    ],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
 ]

@@ -37,7 +37,7 @@ A manual smoke test (deliberately deferred from the dependency-upgrade merge —
 - **Removed a now-dead macOS-specific workaround**, verified empirically before removing: `App.jsx` had a UA-sniffing effect that added a `mac-fix` body class, consumed by one CSS rule bumping the header container's max-width for Mac users. This was compensating for the old broken typewriter. Confirmed via WebKit that it's no longer needed — WebKit's actual rendered title width (698.9px) is *narrower* than Chromium's (~907.6px) for the identical string, so the base container width already has plenty of room. Removed both the JS effect and the CSS rule; full suite re-verified across all 3 engines afterward.
 - Added `e2e-tests/layout.spec.js` (6 tests × 3 engines = 18 checks) — this whole class of bug (content overflowing its container, cascade-layer precedence) is invisible to the unit suite, since jsdom doesn't do real CSS layout or cascade resolution. Real-browser-only coverage, on purpose.
 
-Current state: **31/31 unit/component/a11y tests passing, 24/24 E2E tests passing (8 tests × 3 engines: Chromium, Firefox, WebKit).**
+Current state: **50/50 unit/component/a11y tests passing, 24/24 E2E tests passing (8 tests × 3 engines: Chromium, Firefox, WebKit).**
 
 ## Running the suites
 
