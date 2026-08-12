@@ -1,4 +1,4 @@
-import React from "react";
+import PropTypes from "prop-types";
 import Nav from "./Nav";
 import { useTypewriter } from "../hooks/useTypewriter";
 
@@ -42,5 +42,11 @@ function Header({ handleToggle, toastMessage, darkMode }) {
     </header>
   );
 }
+
+Header.propTypes = {
+  handleToggle: PropTypes.func.isRequired,
+  toastMessage: PropTypes.string,
+  darkMode: PropTypes.bool,
+};
 
 export default Header;

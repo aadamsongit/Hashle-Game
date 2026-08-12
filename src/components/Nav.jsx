@@ -1,4 +1,4 @@
-import React from "react";
+import PropTypes from "prop-types";
 
 function Nav({ handleToggle, darkMode }) {
   return (
@@ -16,5 +16,10 @@ function Nav({ handleToggle, darkMode }) {
     </nav>
   );
 }
+
+Nav.propTypes = {
+  handleToggle: PropTypes.func.isRequired,
+  darkMode: PropTypes.bool,
+};
 
 export default Nav;
