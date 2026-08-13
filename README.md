@@ -37,4 +37,5 @@ pnpm run build      # production build
 
 - [Testing](./docs/TESTING.md) — current test suite status, what's still open, how to run everything
 - [Dependency Upgrades](./docs/DEPENDENCY-UPGRADES.md) — the pnpm and Tailwind CSS 4 migrations
-- [Architecture Notes](./docs/ARCHITECTURE.md) — technical debt, backend tradeoffs under consideration, recommended next steps
+- [Architecture Notes](./docs/ARCHITECTURE.md) — technical debt, the confirmed backend decision, recommended next steps
+- [Backend Requirements](./docs/BACKEND.md) — scope for the Express/Postgres/Prisma backend, built via fork + PR against `backend-express-refactor`
