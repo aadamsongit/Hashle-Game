@@ -1,9 +1,8 @@
 import type { Request, Response } from "express";
-
-const frontendUrl = process.env.FRONTEND_URL ?? "http://localhost:5173";
+import { env } from "../config/env.js";
 
 export function googleCallback(_req: Request, res: Response) {
-  res.redirect(frontendUrl);
+  res.redirect(env.FRONTEND_URL);
 }
 
 export function logout(req: Request, res: Response, next: (err?: unknown) => void) {
