@@ -22,6 +22,6 @@ export function me(req: Request, res: Response) {
     return;
   }
 
-  const { id, email } = req.user;
-  res.status(200).json({ id, email });
+  const { id, email, displayName } = req.user;
+  res.status(200).json({ id, email, displayName });
 }

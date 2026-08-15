@@ -13,10 +13,11 @@ enum Outcome {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  googleId  String   @unique
-  email     String   @unique
-  createdAt DateTime @default(now())
+  id          String   @id @default(uuid())
+  googleId    String   @unique
+  email       String   @unique
+  displayName String
+  createdAt   DateTime @default(now())
 
   dailyResults DailyResult[]
 }

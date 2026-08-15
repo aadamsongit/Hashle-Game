@@ -8,6 +8,10 @@ export function findUserById(id: string) {
   return prisma.user.findUnique({ where: { id } });
 }
 
-export function createUser(data: { googleId: string; email: string }) {
+export function createUser(data: {
+  googleId: string;
+  email: string;
+  displayName: string;
+}) {
   return prisma.user.create({ data });
 }

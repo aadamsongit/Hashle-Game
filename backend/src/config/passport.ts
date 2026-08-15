@@ -27,9 +27,12 @@ passport.use(
           return;
         }
 
+        const displayName = profile.displayName || email.split("@")[0];
+
         const user = await authService.findOrCreateGoogleUser({
           googleId: profile.id,
           email,
+          displayName,
         });
         done(null, user);
       } catch (err) {
