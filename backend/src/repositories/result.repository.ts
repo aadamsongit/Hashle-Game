@@ -26,3 +26,19 @@ export function findResultsByUserId(userId: string) {
     select: { dayIndex: true, outcome: true },
   });
 }
+
+export function countResultsByUserId(userId: string) {
+  return prisma.dailyResult.count({ where: { userId } });
+}
+
+export function createManyResults(
+  rows: {
+    userId: string;
+    dayIndex: number;
+    outcome: Outcome;
+    guesses: number;
+    completedAt: Date;
+  }[]
+) {
+  return prisma.dailyResult.createMany({ data: rows, skipDuplicates: true });
+}

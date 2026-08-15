@@ -8,6 +8,7 @@ import { authRouter } from "./routes/auth.routes.js";
 import { resultsRouter } from "./routes/results.routes.js";
 import { statsRouter } from "./routes/stats.routes.js";
 import { leaderboardRouter } from "./routes/leaderboard.routes.js";
+import { importRouter } from "./routes/import.routes.js";
 
 const PgSession = pgSession(session);
 const sessionPool = new Pool({ connectionString: process.env.DATABASE_URL });
@@ -41,3 +42,4 @@ app.use("/auth", authRouter);
 app.use("/results", resultsRouter);
 app.use("/me", statsRouter);
 app.use("/leaderboard", leaderboardRouter);
+app.use("/import", importRouter);
