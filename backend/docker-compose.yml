@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: hashle
+      POSTGRES_PASSWORD: hashle
+      POSTGRES_DB: hashle
+    ports:
+      - "5432:5432"
+    volumes:
+      - hashle_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  hashle_postgres_data:
