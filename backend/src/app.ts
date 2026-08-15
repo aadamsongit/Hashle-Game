@@ -6,6 +6,7 @@ import { passport } from "./config/passport.js";
 import { healthRouter } from "./routes/health.routes.js";
 import { authRouter } from "./routes/auth.routes.js";
 import { resultsRouter } from "./routes/results.routes.js";
+import { statsRouter } from "./routes/stats.routes.js";
 
 const PgSession = pgSession(session);
 const sessionPool = new Pool({ connectionString: process.env.DATABASE_URL });
@@ -37,3 +38,4 @@ app.use(passport.session());
 
 app.use("/auth", authRouter);
 app.use("/results", resultsRouter);
+app.use("/me", statsRouter);

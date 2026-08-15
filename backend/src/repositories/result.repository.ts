@@ -19,3 +19,10 @@ export function upsertResult(data: {
     create: data,
   });
 }
+
+export function findResultsByUserId(userId: string) {
+  return prisma.dailyResult.findMany({
+    where: { userId },
+    select: { dayIndex: true, outcome: true },
+  });
+}
