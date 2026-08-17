@@ -42,6 +42,14 @@ The server runs on `http://localhost:4000` by default.
 | `pnpm prisma:generate`        | Regenerate the Prisma client           |
 | `pnpm prisma:migrate`          | Create and apply a migration           |
 
+## API docs
+
+Interactive docs (Swagger UI): `http://localhost:4000/docs`
+Raw OpenAPI spec (JSON): `http://localhost:4000/openapi.json`
+
+Generated from the same Zod schemas used to validate requests, so the docs
+can't drift from what the code actually accepts.
+
 ## API
 
 | Method | Path                    | Auth required | Notes                                   |

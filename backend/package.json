@@ -13,6 +13,7 @@
     "prisma:migrate": "prisma migrate dev"
   },
   "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^9.1.0",
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
     "connect-pg-simple": "^10.0.0",
@@ -24,6 +25,7 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.23.0",
+    "swagger-ui-express": "^5.0.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -37,6 +39,7 @@
     "@types/passport-google-oauth20": "^2.0.17",
     "@types/pg": "^8.21.0",
     "@types/supertest": "^7.2.1",
+    "@types/swagger-ui-express": "^4.1.8",
     "eslint": "^9.33.0",
     "globals": "^15.15.0",
     "prisma": "^7.9.1",
