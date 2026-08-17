@@ -11,10 +11,17 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
+.env.*
+!.env.example
 
 # Playwright output — ephemeral, regenerated per run
 test-results/
 playwright-report/
+
+# Local backend planning notes — not part of the shared repo
+backend/CLAUDE.md
+backend/PLAN.md
 
 # Editor directories and files
 .vscode/*

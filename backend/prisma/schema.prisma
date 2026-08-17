@@ -1,0 +1,35 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Outcome {
+  win
+  loss
+  in_progress
+}
+
+model User {
+  id          String   @id @default(uuid())
+  googleId    String   @unique
+  email       String   @unique
+  displayName String
+  createdAt   DateTime @default(now())
+
+  dailyResults DailyResult[]
+}
+
+model DailyResult {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  dayIndex    Int
+  outcome     Outcome
+  guesses     Int
+  completedAt DateTime @default(now())
+
+  @@unique([userId, dayIndex])
+}

@@ -23,7 +23,28 @@ The test suite was set up early, but it went unvalidated for a while — and it 
 
 Full writeup: **[docs/TESTING.md](./docs/TESTING.md)** (test details) · **[docs/DEPENDENCY-UPGRADES.md](./docs/DEPENDENCY-UPGRADES.md)** (pnpm/Tailwind 4 + the bugs that surfaced from them).
 
+## Tech Stack
+
+**Frontend:** React, Vite, Tailwind CSS
+**Backend:** Express, TypeScript, PostgreSQL, Prisma
+
+## Project Structure
+
+This is one repo with two apps, run as pnpm workspaces.
+
+```
+.
+├── src/          # frontend app (React, Vite)
+├── backend/      # backend app (Express, TypeScript, Prisma)
+├── docs/         # architecture and requirement docs
+└── e2e-tests/    # Playwright end-to-end tests
+```
+
+The two apps deploy separately: frontend on Vercel, backend on Render (or similar). Being in one repo just makes them easier to work on together — it does not tie their deploys together.
+
 ## Getting Started
+
+### Frontend
 
 ```bash
 pnpm install
@@ -33,9 +54,53 @@ pnpm exec playwright test   # run the E2E suite
 pnpm run build      # production build
 ```
 
+### Backend
+
+The backend is a separate app in `backend/`. Full setup steps: [backend/README.md](./backend/README.md).
+
+Short version:
+
+```bash
+cd backend
+cp .env.example .env   # then fill in real Google OAuth values
+docker compose up -d   # starts local Postgres
+pnpm install            # from the repo root
+pnpm prisma:migrate
+pnpm dev
+```
+
+## Core Packages
+
+### Frontend
+
+| Package | Why |
+| --- | --- |
+| React | Builds the UI as components |
+| Vite | Fast dev server and build tool |
+| Tailwind CSS | Utility-first styling, no separate CSS files to maintain |
+| Vitest | Runs unit and component tests |
+| Playwright | Runs end-to-end tests in real browsers |
+
+### Backend
+
+| Package | Why |
+| --- | --- |
+| Express | HTTP server, handles routes and requests |
+| TypeScript | Catches type errors before runtime |
+| Prisma | Type-safe database queries, manages migrations |
+| PostgreSQL | Stores users, game results, and sessions |
+| Passport | Handles Google login |
+| express-session + connect-pg-simple | Keeps users logged in; session data lives in Postgres, not memory |
+| zod | Checks that incoming request data is valid before it's used |
+| Helmet | Adds standard HTTP security headers |
+| Vitest + Supertest | Tests services and routes without needing a live database for most tests |
+
+Full reasoning behind the backend stack decision: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) and [docs/BACKEND.md](./docs/BACKEND.md).
+
 ## Documentation
 
 - [Testing](./docs/TESTING.md) — current test suite status, what's still open, how to run everything
 - [Dependency Upgrades](./docs/DEPENDENCY-UPGRADES.md) — the pnpm and Tailwind CSS 4 migrations
 - [Architecture Notes](./docs/ARCHITECTURE.md) — technical debt, the confirmed backend decision, recommended next steps
 - [Backend Requirements](./docs/BACKEND.md) — scope for the Express/Postgres/Prisma backend, built via fork + PR against `backend-express-refactor`
+- [Backend README](./backend/README.md) — backend setup, scripts, and API reference

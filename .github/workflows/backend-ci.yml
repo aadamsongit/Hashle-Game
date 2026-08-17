@@ -1,0 +1,50 @@
+name: Backend CI
+
+on:
+  pull_request:
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-ci.yml"
+  push:
+    branches:
+      - backend-express-refactor
+    paths:
+      - "backend/**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://hashle:hashle@localhost:5432/hashle
+      SESSION_SECRET: ci-session-secret
+      GOOGLE_CLIENT_ID: ci-client-id
+      GOOGLE_CLIENT_SECRET: ci-client-secret
+      GOOGLE_CALLBACK_URL: http://localhost:4000/auth/google/callback
+      FRONTEND_URL: http://localhost:5173
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Prisma generate
+        run: pnpm --filter backend prisma:generate
+
+      - name: Lint
+        run: pnpm --filter backend lint
+
+      - name: Typecheck
+        run: pnpm --filter backend exec tsc --noEmit
+
+      - name: Prisma validate
+        run: pnpm --filter backend exec prisma validate
+
+      - name: Test
+        run: pnpm --filter backend test
