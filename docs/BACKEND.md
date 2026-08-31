@@ -43,6 +43,17 @@ Streaks are a derived read (consecutive `day_index` entries with `outcome: "win"
 - `GET /me/stats` -- current streak, longest streak, win rate.
 - `GET /leaderboard` -- see open questions on ranking.
 
+## Result integrity (resolved 2026-08-31, see PR #5)
+
+The backend does not referee gameplay -- it doesn't know the day's word and doesn't replay a user's guesses server-side, so `POST /results` and `POST /import` trust the client's reported `outcome` and `guesses` as-is. This was a deliberate decision from early on, not an oversight: the full fix (deriving each day's answer and validating guesses against it server-side) is real work and would reverse the original choice not to have the backend referee gameplay, which isn't judged worth the complexity for a casual/social leaderboard right now.
+
+Two cheap safeguards ship instead, as the accepted middle ground -- not a fix for a determined cheater, just closing the most trivial cases:
+
+- `POST /results` and `POST /import` reject any `dayIndex` greater than the server's own computed current day index (same epoch/day-length math as the frontend's `getDayIndex()` in `src/utils/gameHelpers.js`) -- a submission can't claim a day that hasn't happened yet.
+- `POST /results` is rate-limited per authenticated user (10 requests/hour) -- one real result per day is the actual usage pattern, so this only bites a script hammering the endpoint, not a real player.
+
+If the leaderboard's integrity needs to be stronger than this later, revisit deriving/validating the actual answer server-side -- that's the real fix, this is the documented interim position.
+
 ## Open questions -- for you and Ayomide to settle, not decided here
 
 - **Auth provider and session strategy.** `ARCHITECTURE.md` has a standing preference for Google OAuth, but that was never confirmed in the actual conversation with Ayomide -- worth explicitly re-confirming rather than assuming it's locked. Also undecided: session cookies vs. JWT, and whether Express owns sessions directly or defers to something like Passport/Auth.js.
