@@ -6,6 +6,12 @@
 - Reproduce and guard against the reported all-gray-row bug specifically — see the open question below.
 - Run axe-core against more states of the app (mid-game, win, loss), not just initial render.
 - Prioritize deeper test coverage because Hashle is small enough to serve as a focused testing practice project.
+- **Weak spots in `src/App.a11y.test.jsx`** (found reviewing it, 2026-10-15):
+  - The color-contrast test has no `expect`, so it can never fail; it only logs. jsdom doesn't render styles either, so axe can't compute real contrast there.
+  - `@axe-core/playwright` is installed but not used in any spec. Move contrast checks (and axe on mid-game/win/loss states, above) into Playwright, where colors are actually rendered.
+  - The focus test only checks that no button has `tabindex="-1"`. Real focus behavior (Tab order, where focus lands after a guess) needs a real browser: another Playwright job.
+  - `buttons.length > 0` (button-labels and focus tests) would pass on almost any page.
+  - Every test waits a fixed 100 ms `setTimeout` for hydration. Replace with `findBy…`/`waitFor` so tests wait on an actual condition.
 
 ## Screenshots
 
