@@ -3,6 +3,9 @@ import { axe, toHaveNoViolations } from "jest-axe";
 import { describe, it, expect, beforeEach } from "vitest";
 import App from "./App";
 
+// Extend Jest matchers for accessibility testing
+expect.extend(toHaveNoViolations);
+
 // Mock the data import
 vi.mock("./data.json", () => ({
   default: [{ word: "apple" }, { word: "chair" }, { word: "stake" }],
@@ -105,27 +108,6 @@ describe("App Accessibility", () => {
     // Check for sections
     const sections = container.querySelectorAll("section");
     expect(sections.length).toBeGreaterThan(0);
-  });
-
-  it("should have proper color contrast (basic check)", async () => {
-    const { container } = render(<App />);
-
-    // Wait for component to hydrate
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    });
-
-    // This is a basic check - axe-core will do more thorough contrast testing
-    const results = await axe(container, {
-      rules: {
-        "color-contrast": { enabled: true },
-      },
-    });
-
-    // Log any contrast violations for manual review
-    if (results.violations.length > 0) {
-      console.log("Color contrast violations:", results.violations);
-    }
   });
 
   it("should have proper focus management", async () => {
