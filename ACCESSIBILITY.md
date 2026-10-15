@@ -62,7 +62,6 @@ npm run test
 ## 🔧 Accessibility Testing Setup
 
 ### Dependencies
-- `@axe-core/react`: React-specific accessibility testing
 - `jest-axe`: Jest matchers for accessibility testing
 - `@testing-library/react`: React component testing utilities
 
