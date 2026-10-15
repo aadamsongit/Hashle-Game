@@ -6,7 +6,9 @@ test.describe("Accessibility Tests", () => {
     page,
   }) => {
     await page.goto("/");
-    await page.getByRole("heading", { level: 1, name: "Hashle" }).toBeVisible();
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Hashle" }),
+    ).toBeVisible();
 
     const results = await new AxeBuilder({ page }).analyze();
     expect(results.violations).toHaveLength(0);

@@ -3,9 +3,6 @@ import { axe, toHaveNoViolations } from "jest-axe";
 import { describe, it, expect, beforeEach } from "vitest";
 import App from "./App";
 
-// Extend Jest matchers for accessibility testing
-expect.extend(toHaveNoViolations);
-
 // Mock the data import
 vi.mock("./data.json", () => ({
   default: [{ word: "apple" }, { word: "chair" }, { word: "stake" }],
