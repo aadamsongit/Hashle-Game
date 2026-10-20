@@ -5,7 +5,7 @@
 - Guard the save key against midnight rollover: the daily word is fixed at page load, but the persist effect in `App.jsx` calls `getDayIndex()` again on every save. A tab left open past **UTC** midnight (8pm Eastern during daylight saving time) would save today's guesses under tomorrow's key, and they'd be re-colored against the wrong word on the next load. Not observed in the wild; found while investigating the all-gray report below.
 - Run axe-core against more states of the app (mid-game, win, loss), not just initial render.
 - Prioritize deeper test coverage because Hashle is small enough to serve as a focused testing practice project.
-- **Weak spots in `src/App.a11y.test.jsx`** (found reviewing it, 2026-10-15):
+- **Weak spots in `src/App.a11y.test.jsx`** (found reviewing it, 2026-10-15; full audit 2026-10-20 in [A11Y-TEST-AUDIT.md](./A11Y-TEST-AUDIT.md), tracked in #15):
   - ~~The color-contrast test has no `expect`, so it can never fail.~~ Done (#8, PR #10): the jsdom contrast test was deleted. Contrast is now checked by the full-page axe scan in `e2e-tests/a11y.spec.js`, where colors are actually rendered.
   - ~~`@axe-core/playwright` is installed but not used in any spec.~~ Done (#8, PR #10): `e2e-tests/a11y.spec.js` uses it. Its first run caught a real violation (`aria-prohibited-attr` on the header title), fixed in #9 / PR #11.
   - The focus test only checks that no button has `tabindex="-1"`. Real focus behavior (Tab order, where focus lands after a guess) needs a real browser: another Playwright job.
