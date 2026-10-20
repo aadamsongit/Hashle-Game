@@ -3,7 +3,7 @@ import { axe, toHaveNoViolations } from "jest-axe";
 import { describe, it, expect, beforeEach } from "vitest";
 import App from "./App";
 
-// Extend Jest matchers for accessibility testing
+// set up matcher via jest-axe for accessibility testing (from axe-core library for automated accessibility testing)
 expect.extend(toHaveNoViolations);
 
 // Mock the data import
@@ -31,6 +31,7 @@ describe("App Accessibility", () => {
   });
 
   it("should not have accessibility violations", async () => {
+    // Render the App component and destructure the container for axe testing
     const { container } = render(<App />);
 
     // Wait for component to hydrate
@@ -38,6 +39,7 @@ describe("App Accessibility", () => {
       await new Promise((resolve) => setTimeout(resolve, 100));
     });
 
+    // Run axe accessibility tests on the rendered container and expect no violations
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
