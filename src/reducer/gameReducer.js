@@ -3,19 +3,25 @@ import { isCorrectWord } from "../utils/wordHelpers";
 
 export const MAX_ROWS = 6;
 
-export function createInitialState(currentWord) {
+export function createInitialState({ currentWord, dayIndex, saved }) {
+  const emptyBoard = Array.from({ length: MAX_ROWS }, () =>
+    Array(currentWord.length).fill(""),
+  );
+  const allGuesses = Array.isArray(saved?.boardState)
+    ? saved.boardState
+    : emptyBoard;
+  const { classNames, keyStatuses } = rebuildStatuses(allGuesses, currentWord);
+
   return {
     currentWord,
+    dayIndex,
     guessedWord: [],
-    allGuesses: Array.from({ length: MAX_ROWS }, () =>
-      Array(currentWord.length).fill("")
-    ),
-    currentRowIndex: 0,
-    gameWon: false,
-    gameLoss: false,
-    hasHydrated: false,
-    classNames: [],
-    keyStatuses: {},
+    allGuesses,
+    currentRowIndex: saved ? resolveNextRowIndex(allGuesses) : 0,
+    gameWon: saved?.outcome === "win",
+    gameLoss: saved?.outcome === "loss",
+    classNames,
+    keyStatuses,
   };
 }
 
@@ -25,34 +31,6 @@ export function createInitialState(currentWord) {
 // full word list, so it couldn't validate that itself anyway.
 export function gameReducer(state, action) {
   switch (action.type) {
-    case "HYDRATE": {
-      const { boardState, outcome } = action.payload || {};
-      const allGuesses =
-        boardState && Array.isArray(boardState)
-          ? boardState
-          : state.allGuesses;
-
-      const currentRowIndex = boardState
-        ? resolveNextRowIndex(boardState)
-        : state.currentRowIndex;
-
-      const { classNames, keyStatuses } = rebuildStatuses(
-        allGuesses,
-        state.currentWord
-      );
-
-      return {
-        ...state,
-        allGuesses,
-        currentRowIndex,
-        gameWon: outcome === "win",
-        gameLoss: outcome === "loss",
-        hasHydrated: true,
-        classNames,
-        keyStatuses,
-      };
-    }
-
     case "TYPE_LETTER": {
       if (state.gameWon || state.gameLoss) return state;
       if (state.guessedWord.length >= state.currentWord.length) return state;
@@ -84,7 +62,7 @@ export function gameReducer(state, action) {
       // development is specifically designed to expose. Always build a
       // brand-new row array for the row actually being written.
       const allGuesses = state.allGuesses.map((row, index) =>
-        index === state.currentRowIndex ? [...guessedWord] : row
+        index === state.currentRowIndex ? [...guessedWord] : row,
       );
 
       const currentRowIndex = state.currentRowIndex + 1;
@@ -93,7 +71,7 @@ export function gameReducer(state, action) {
 
       const { classNames, keyStatuses } = rebuildStatuses(
         allGuesses,
-        state.currentWord
+        state.currentWord,
       );
 
       return {
@@ -123,6 +101,6 @@ function resolveNextRowIndex(boardState) {
 // drift out of sync with it.
 export function getDisabledLetters(keyStatuses) {
   return Object.keys(keyStatuses).filter(
-    (letter) => keyStatuses[letter] === "absent"
+    (letter) => keyStatuses[letter] === "absent",
   );
 }
