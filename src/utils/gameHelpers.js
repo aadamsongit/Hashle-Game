@@ -16,3 +16,8 @@ export function saveToLocalStorage(boardState, outcome, dayIndex) {
   };
   localStorage.setItem("dailyResults", JSON.stringify(storedData));
 }
+
+export function loadDailyResult(dayIndex) {
+  const storedData = JSON.parse(localStorage.getItem("dailyResults")) || {};
+  return storedData[dayIndex] || null;
+}

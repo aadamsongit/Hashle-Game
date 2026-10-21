@@ -35,6 +35,10 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --tile-correct: green;
+  --tile-present: #B59F3B;
+  --tile-absent: gray;
 }
 
 a {
@@ -113,17 +117,17 @@ body {
 
 .bg-green {
   color: #ffffff;
-  background-color: green;
+  background-color: var(--tile-correct);
 }
 
 .bg-yellow {
   color: #ffffff;
-  background-color: #B59F3B;
+  background-color: var(--tile-present);
 }
 
 .bg-gray {
   color: #ffffff;
-  background-color: gray;
+  background-color: var(--tile-absent);
 }
 
 .terminal-title {

@@ -8,7 +8,11 @@ import {
 
 describe("createInitialState", () => {
   it("builds an empty board sized to the word length, everything else at defaults", () => {
-    const state = createInitialState("APPLE");
+    const state = createInitialState({
+      currentWord: "APPLE",
+      dayIndex: 0,
+      saved: null,
+    });
     expect(state.currentWord).toBe("APPLE");
     expect(state.guessedWord).toEqual([]);
     expect(state.allGuesses).toHaveLength(MAX_ROWS);
@@ -16,24 +20,11 @@ describe("createInitialState", () => {
     expect(state.currentRowIndex).toBe(0);
     expect(state.gameWon).toBe(false);
     expect(state.gameLoss).toBe(false);
-    expect(state.hasHydrated).toBe(false);
   });
 });
 
-describe("gameReducer > HYDRATE", () => {
-  it("with no saved board, just marks hydrated and leaves the fresh board alone", () => {
-    const state = createInitialState("APPLE");
-    const next = gameReducer(state, { type: "HYDRATE", payload: null });
-
-    expect(next.hasHydrated).toBe(true);
-    expect(next.allGuesses).toEqual(state.allGuesses);
-    expect(next.currentRowIndex).toBe(0);
-    expect(next.gameWon).toBe(false);
-    expect(next.gameLoss).toBe(false);
-  });
-
+describe("createInitialState > restoring a saved board", () => {
   it("restores a saved in-progress board, finds the right next row, and computes classNames/keyStatuses", () => {
-    const state = createInitialState("APPLE");
     const boardState = [
       ["S", "T", "A", "K", "E"],
       ["", "", "", "", ""],
@@ -43,9 +34,10 @@ describe("gameReducer > HYDRATE", () => {
       ["", "", "", "", ""],
     ];
 
-    const next = gameReducer(state, {
-      type: "HYDRATE",
-      payload: { boardState, outcome: "in_progress" },
+    const next = createInitialState({
+      currentWord: "APPLE",
+      dayIndex: 0,
+      saved: { boardState, outcome: "in_progress" },
     });
 
     expect(next.currentRowIndex).toBe(1);
@@ -59,7 +51,6 @@ describe("gameReducer > HYDRATE", () => {
   });
 
   it("restores a win outcome correctly", () => {
-    const state = createInitialState("APPLE");
     const boardState = [
       ["A", "P", "P", "L", "E"],
       ["", "", "", "", ""],
@@ -69,9 +60,10 @@ describe("gameReducer > HYDRATE", () => {
       ["", "", "", "", ""],
     ];
 
-    const next = gameReducer(state, {
-      type: "HYDRATE",
-      payload: { boardState, outcome: "win" },
+    const next = createInitialState({
+      currentWord: "APPLE",
+      dayIndex: 0,
+      saved: { boardState, outcome: "win" },
     });
 
     expect(next.gameWon).toBe(true);
@@ -79,13 +71,13 @@ describe("gameReducer > HYDRATE", () => {
   });
 
   it("a fully-filled board with no empty rows resolves currentRowIndex to the board length", () => {
-    const state = createInitialState("APPLE");
     const fullRow = ["S", "T", "A", "K", "E"];
     const boardState = Array.from({ length: MAX_ROWS }, () => [...fullRow]);
 
-    const next = gameReducer(state, {
-      type: "HYDRATE",
-      payload: { boardState, outcome: "loss" },
+    const next = createInitialState({
+      currentWord: "APPLE",
+      dayIndex: 0,
+      saved: { boardState, outcome: "loss" },
     });
 
     expect(next.currentRowIndex).toBe(MAX_ROWS);
@@ -95,7 +87,9 @@ describe("gameReducer > HYDRATE", () => {
 
 describe("gameReducer > TYPE_LETTER / DELETE_LETTER", () => {
   it("appends a letter", () => {
-    const state = { ...createInitialState("APPLE"), hasHydrated: true };
+    const state = {
+      ...createInitialState({ currentWord: "APPLE", dayIndex: 0, saved: null }),
+    };
     const next = gameReducer(state, {
       type: "TYPE_LETTER",
       payload: { letter: "A" },
@@ -105,7 +99,7 @@ describe("gameReducer > TYPE_LETTER / DELETE_LETTER", () => {
 
   it("refuses to type past the word length", () => {
     const state = {
-      ...createInitialState("APPLE"),
+      ...createInitialState({ currentWord: "APPLE", dayIndex: 0, saved: null }),
       guessedWord: ["A", "P", "P", "L", "E"],
     };
     const next = gameReducer(state, {
@@ -117,25 +111,38 @@ describe("gameReducer > TYPE_LETTER / DELETE_LETTER", () => {
   });
 
   it("does nothing once the game is won or lost", () => {
-    const won = { ...createInitialState("APPLE"), gameWon: true };
+    const won = {
+      ...createInitialState({ currentWord: "APPLE", dayIndex: 0, saved: null }),
+      gameWon: true,
+    };
     expect(
-      gameReducer(won, { type: "TYPE_LETTER", payload: { letter: "A" } })
+      gameReducer(won, { type: "TYPE_LETTER", payload: { letter: "A" } }),
     ).toBe(won);
 
-    const lost = { ...createInitialState("APPLE"), gameLoss: true };
+    const lost = {
+      ...createInitialState({ currentWord: "APPLE", dayIndex: 0, saved: null }),
+      gameLoss: true,
+    };
     expect(
-      gameReducer(lost, { type: "TYPE_LETTER", payload: { letter: "A" } })
+      gameReducer(lost, { type: "TYPE_LETTER", payload: { letter: "A" } }),
     ).toBe(lost);
   });
 
   it("deletes the last letter", () => {
-    const state = { ...createInitialState("APPLE"), guessedWord: ["A", "P"] };
+    const state = {
+      ...createInitialState({ currentWord: "APPLE", dayIndex: 0, saved: null }),
+      guessedWord: ["A", "P"],
+    };
     const next = gameReducer(state, { type: "DELETE_LETTER" });
     expect(next.guessedWord).toEqual(["A"]);
   });
 
   it("does nothing when there's nothing to delete", () => {
-    const state = createInitialState("APPLE");
+    const state = createInitialState({
+      currentWord: "APPLE",
+      dayIndex: 0,
+      saved: null,
+    });
     const next = gameReducer(state, { type: "DELETE_LETTER" });
     expect(next).toBe(state);
   });
@@ -143,7 +150,9 @@ describe("gameReducer > TYPE_LETTER / DELETE_LETTER", () => {
 
 describe("gameReducer > SUBMIT_GUESS", () => {
   it("places the guess in the current row, advances the row, clears guessedWord", () => {
-    const state = { ...createInitialState("APPLE"), hasHydrated: true };
+    const state = {
+      ...createInitialState({ currentWord: "APPLE", dayIndex: 0, saved: null }),
+    };
     const next = gameReducer(state, {
       type: "SUBMIT_GUESS",
       payload: { guessedWord: ["S", "T", "A", "K", "E"] },
@@ -157,7 +166,11 @@ describe("gameReducer > SUBMIT_GUESS", () => {
   });
 
   it("detects a win", () => {
-    const state = createInitialState("APPLE");
+    const state = createInitialState({
+      currentWord: "APPLE",
+      dayIndex: 0,
+      saved: null,
+    });
     const next = gameReducer(state, {
       type: "SUBMIT_GUESS",
       payload: { guessedWord: ["A", "P", "P", "L", "E"] },
@@ -173,7 +186,11 @@ describe("gameReducer > SUBMIT_GUESS", () => {
   });
 
   it("detects a loss on the 6th unsuccessful guess", () => {
-    let state = createInitialState("APPLE");
+    let state = createInitialState({
+      currentWord: "APPLE",
+      dayIndex: 0,
+      saved: null,
+    });
     for (let i = 0; i < 5; i++) {
       state = gameReducer(state, {
         type: "SUBMIT_GUESS",
@@ -190,19 +207,26 @@ describe("gameReducer > SUBMIT_GUESS", () => {
   });
 
   it("does nothing once the game is already won or lost", () => {
-    const won = { ...createInitialState("APPLE"), gameWon: true };
+    const won = {
+      ...createInitialState({ currentWord: "APPLE", dayIndex: 0, saved: null }),
+      gameWon: true,
+    };
     expect(
       gameReducer(won, {
         type: "SUBMIT_GUESS",
         payload: { guessedWord: ["S", "T", "A", "K", "E"] },
-      })
+      }),
     ).toBe(won);
   });
 
   it("scores a duplicate-letter guess the same way the standalone rebuildStatuses tests already prove correct", () => {
     // Same case as rebuildStatuses.test.js's duplicate-letter case,
     // routed through the reducer this time.
-    const state = createInitialState("APPLE");
+    const state = createInitialState({
+      currentWord: "APPLE",
+      dayIndex: 0,
+      saved: null,
+    });
     const next = gameReducer(state, {
       type: "SUBMIT_GUESS",
       payload: { guessedWord: ["S", "P", "E", "E", "D"] },
@@ -226,7 +250,11 @@ describe("gameReducer > purity under double-invocation (React StrictMode)", () =
   // nested array shared with the previous state). Guarding against it
   // here directly rather than trusting it won't happen.
   it("calling the reducer twice with the same original state produces the same result and never mutates the original", () => {
-    const original = createInitialState("APPLE");
+    const original = createInitialState({
+      currentWord: "APPLE",
+      dayIndex: 0,
+      saved: null,
+    });
     const originalRowZeroRef = original.allGuesses[0];
     const action = {
       type: "SUBMIT_GUESS",
@@ -242,8 +270,8 @@ describe("gameReducer > purity under double-invocation (React StrictMode)", () =
     expect(original.allGuesses[0]).toEqual(["", "", "", "", ""]);
   });
 
-  it("same check for HYDRATE against a saved board", () => {
-    const original = createInitialState("APPLE");
+  it("same check for createInitialState against a saved board", () => {
+    // StrictMode double-invokes useReducer initializers too.
     const boardState = [
       ["S", "T", "A", "K", "E"],
       ["", "", "", "", ""],
@@ -253,13 +281,18 @@ describe("gameReducer > purity under double-invocation (React StrictMode)", () =
       ["", "", "", "", ""],
     ];
     const originalBoardRowRef = boardState[0];
-    const action = { type: "HYDRATE", payload: { boardState, outcome: "in_progress" } };
+    const args = {
+      currentWord: "APPLE",
+      dayIndex: 0,
+      saved: { boardState, outcome: "in_progress" },
+    };
 
-    const resultA = gameReducer(original, action);
-    const resultB = gameReducer(original, action);
+    const resultA = createInitialState(args);
+    const resultB = createInitialState(args);
 
     expect(resultA).toEqual(resultB);
     expect(boardState[0]).toBe(originalBoardRowRef);
+    expect(boardState[0]).toEqual(["S", "T", "A", "K", "E"]);
   });
 });
 

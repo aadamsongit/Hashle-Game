@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import "./index.css";
 import data from "./data.json";
 import Header from "./components/Header.jsx";
@@ -12,7 +12,11 @@ import {
   getDisabledLetters,
 } from "./reducer/gameReducer";
 import { getDailyWord } from "./utils/getRandomWord";
-import { getDayIndex, saveToLocalStorage } from "./utils/gameHelpers";
+import {
+  getDayIndex,
+  saveToLocalStorage,
+  loadDailyResult,
+} from "./utils/gameHelpers";
 import {
   isValidWord,
   isValidWordLength,
@@ -22,11 +26,15 @@ import {
 function App() {
   const [darkMode, handleToggle] = useDarkMode();
 
-  const initialWord = useMemo(() => getDailyWord(data).toUpperCase(), []);
+  const initialWord = getDailyWord(data).toUpperCase();
   const [state, dispatch] = useReducer(
     gameReducer,
-    initialWord,
-    createInitialState
+    {
+      currentWord: initialWord,
+      dayIndex: getDayIndex(),
+      saved: loadDailyResult(getDayIndex()),
+    },
+    createInitialState,
   );
   const {
     currentWord,
@@ -35,7 +43,7 @@ function App() {
     currentRowIndex,
     gameWon,
     gameLoss,
-    hasHydrated,
+    dayIndex,
     classNames,
     keyStatuses,
   } = state;
@@ -68,26 +76,11 @@ function App() {
     getGameStatusClass,
   } = useGameBoard();
 
-  // Hydrate from localStorage once on mount.
+  // Persist board state to localStorage whenever it changes.
   useEffect(() => {
-    const dayIndex = getDayIndex();
-    const savedData = JSON.parse(localStorage.getItem("dailyResults") || "{}");
-    const todayData = savedData[dayIndex];
-
-    dispatch({
-      type: "HYDRATE",
-      payload: todayData
-        ? { boardState: todayData.boardState, outcome: todayData.outcome }
-        : null,
-    });
-  }, []);
-
-  // Persist board state to localStorage whenever it changes post-hydration.
-  useEffect(() => {
-    if (!hasHydrated) return;
     const status = gameWon ? "win" : gameLoss ? "loss" : "in_progress";
-    saveToLocalStorage(allGuesses, status, getDayIndex());
-  }, [allGuesses, hasHydrated, gameWon, gameLoss]);
+    saveToLocalStorage(allGuesses, status, dayIndex);
+  }, [allGuesses, gameWon, gameLoss, dayIndex]);
 
   // Handle letter input from keyboard
   const guessWord = (letter) => {
@@ -145,7 +138,7 @@ function App() {
           keyStatuses,
           darkMode,
           isRGBActive,
-          letterIndex
+          letterIndex,
         );
 
         const rainbowLetter = getRainbowLetterClass(letterIndex);
@@ -153,7 +146,7 @@ function App() {
         const gradientIndex =
           letterIndex <= 7 ? letterIndex : letter === "P" ? 8 : letterIndex;
 
-        return !hasHydrated ? null : (
+        return (
           <button
             key={letterIndex}
             className={buttonClass}
@@ -176,7 +169,7 @@ function App() {
     </div>
   ));
 
-  return !hasHydrated ? null : (
+  return (
     <main className={`sm:pb-10 ${darkMode ? "dark-mode" : ""}`}>
       <Header
         handleToggle={handleToggle}
@@ -218,7 +211,7 @@ function App() {
                   classNames,
                   darkMode,
                   revealingTiles,
-                  bounceTiles
+                  bounceTiles,
                 )}
                 role="gridcell"
                 aria-colindex={key + 1}
