@@ -1,4 +1,4 @@
-import { render, screen, act } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { axe, toHaveNoViolations } from "jest-axe";
 import { describe, it, expect, beforeEach } from "vitest";
 import App from "./App";
@@ -33,22 +33,12 @@ describe("App Accessibility", () => {
   it("should not have accessibility violations", async () => {
     const { container } = render(<App />);
 
-    // Wait for component to hydrate
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    });
-
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
 
   it("should have proper heading structure", async () => {
     render(<App />);
-
-    // Wait for component to hydrate
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    });
 
     // Check for main heading. The title types out via useTypewriter, so
     // its visible text content fills in progressively over real time —
@@ -58,9 +48,7 @@ describe("App Accessibility", () => {
     // full, stable string from the very first render.
     const mainHeading = screen.getByRole("heading", { level: 1 });
     expect(mainHeading).toBeInTheDocument();
-    expect(mainHeading).toHaveAccessibleName(
-      "🚀Hashle: An Evolving Word Game"
-    );
+    expect(mainHeading).toHaveAccessibleName("🚀Hashle: An Evolving Word Game");
 
     // Game status is a live-region announcement, not a document heading —
     // it's empty until a game is won/lost, so it must not be a heading role
@@ -72,11 +60,6 @@ describe("App Accessibility", () => {
 
   it("should have proper button labels and roles", async () => {
     render(<App />);
-
-    // Wait for component to hydrate
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    });
 
     // Check keyboard buttons have proper roles
     const keyboardButtons = screen.getAllByRole("button");
@@ -92,31 +75,21 @@ describe("App Accessibility", () => {
   it("should have proper semantic structure", async () => {
     const { container } = render(<App />);
 
-    // Wait for component to hydrate
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    });
-
     // Check for main landmark
-    const main = container.querySelector("main");
+    const main = screen.getByRole("main");
     expect(main).toBeInTheDocument();
 
     // Check for header landmark
-    const header = container.querySelector("header");
+    const header = screen.getByRole("banner");
     expect(header).toBeInTheDocument();
 
     // Check for sections
-    const sections = container.querySelectorAll("section");
+    const sections = screen.getAllByRole("region");
     expect(sections.length).toBeGreaterThan(0);
   });
 
   it("should have proper focus management", async () => {
     render(<App />);
-
-    // Wait for component to hydrate
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    });
 
     // Check that buttons are focusable (buttons are focusable by default in HTML)
     const buttons = screen.getAllByRole("button");
